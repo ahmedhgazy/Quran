@@ -1,5 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -30,17 +28,234 @@
   --font-arabic: 'Scheherazade New', serif;
 }
 
-
-/* Pattern background */
-.pattern-bg{
-  background-image: radial-gradient(circle at 1px 1px, rgba(212, 168, 67, 0.18) 1px, transparent 0);
+/* ── Pattern background ── */
+.pattern-bg {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(212, 168, 67, 0.18) 1.5px,
+    transparent 0
+  );
   background-size: 26px 26px;
 }
 
-
-/* Glass effect */
-
-.glass{
+/* ── Glass effect ── */
+.glass {
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
+}
+
+/* ── Ayah number marker ── */
+.ayah-marker {
+  font-family: 'Scheherazade New', serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 9999px;
+  border: 1.5px solid #d4a843;
+  color: #b8923a;
+  font-size: 0.95rem;
+  background: radial-gradient(circle, rgba(212, 168, 67, 0.1), transparent 70%);
+}
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4a843aa;
+  border-radius: 8px;
+}
+
+/* ── Tab active state ── */
+.tab-active {
+  background: linear-gradient(135deg, #047857, #059669);
+  color: #fff !important;
+  box-shadow: 0 8px 20px -8px rgba(4, 120, 87, 0.6);
+}
+
+/* ── Animated gradient text ── */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* ── Page fade animation ── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade-in {
+  animation: fade-in 0.4s ease both;
+}
+
+/* ── Card base ── */
+.card {
+  border-radius: 1rem;
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  background: white;
+  transition: 0.2s;
+}
+.dark .card {
+  background: #0a1714;
+}
+.card:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 20px 25px -16px rgba(5, 150, 105, 0.25);
+  transform: translateY(-2px);
+}
+
+/* ── Input base ── */
+.input {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(212, 168, 67, 0.3);
+  background: white;
+  padding: 0.8rem 1.1rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+.dark .input {
+  background: #0a1714;
+  color: #e2ebe8;
+}
+.input:focus {
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
+}
+
+/* ── Buttons ── */
+.btn {
+  border-radius: 0.9rem;
+  background: linear-gradient(135deg, #047857, #059669);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.8rem 1.4rem;
+  font-size: 0.875rem;
+  box-shadow: 0 10px 22px -10px rgba(4, 120, 87, 0.6);
+  transition: 0.2s;
+  cursor: pointer;
+  border: none;
+}
+.btn:hover {
+  filter: brightness(1.1);
+}
+
+.btn-ghost {
+  border-radius: 0.9rem;
+  border: 1px solid rgba(212, 168, 67, 0.4);
+  color: #b8923a;
+  font-weight: 500;
+  padding: 0.8rem 1.4rem;
+  font-size: 0.875rem;
+  transition: 0.2s;
+  cursor: pointer;
+  background: transparent;
+}
+.btn-ghost:hover {
+  background: rgba(212, 168, 67, 0.08);
+}
+
+/* ── Chips & endpoint pills ── */
+.chip {
+  font-size: 0.7rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(212, 168, 67, 0.35);
+  color: #b8923a;
+  cursor: pointer;
+  background: transparent;
+}
+.chip:hover {
+  background: rgba(212, 168, 67, 0.08);
+}
+
+/* ── Skeleton loading ── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(212, 168, 67, 0.08) 25%,
+    rgba(212, 168, 67, 0.15) 50%,
+    rgba(212, 168, 67, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 0.75rem;
+}
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Mushaf Reading Mode ── */
+.mushaf-body {
+  text-align: center;
+}
+
+.mushaf-word {
+  position: relative;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.ayah-end-marker {
+  vertical-align: middle;
+  transition: transform 0.2s ease;
+}
+.ayah-end-marker:hover {
+  transform: scale(1.15);
+}
+
+button {
+  cursor: pointer;
+}
+
+/* ── Theme Background & Element Overrides ── */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Theme: modern white/slate */
+html.light body {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+}
+html.light .card,
+html.light .input {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+}
+
+/* Ivory Theme: warm spiritual cream */
+html.ivory body {
+  background-color: var(--color-ivory) !important;
+  color: #27272a !important;
+}
+html.ivory .card,
+html.ivory .input {
+  background-color: #fdfcf7 !important;
+  color: #27272a !important;
+}
+
+/* Dark Theme: deep nighttime forest */
+html.dark body {
+  background-color: var(--color-night-950) !important;
+  color: #e2ebe8 !important;
+}
+html.dark .card,
+html.dark .input {
+  background-color: #0a1714 !important;
+  color: #e2ebe8 !important;
+}
+
+/* Google Login Button custom styling via transparent overlay trigger */
+.google-wrapper iframe {
+  width: 100% !important;
+  height: 100% !important;
+  cursor: pointer !important;
 }

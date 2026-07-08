@@ -1,1 +1,13 @@
-<div class="h-screen pattern-bg"></div>
+<app-loading-bar />
+<app-header />
+<app-reciter-sidebar />
+<app-navigation-sidebar />
+<app-welcome-modal />
+<main class="min-h-screen">
+  <router-outlet />
+</main>
+@if (!hideFooter()) {
+  <app-footer />
+}
+<app-audio-player />
+<app-toast />
