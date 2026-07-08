@@ -1,3 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: 'KFGQPC Uthman Taha Naskh';
+  src: url('./assets/fonts/KFGQPC Uthman Taha Naskh Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-night-800: #11221d;
+  --color-night-900: #0a1714;
+  --color-night-950: #060f0d;
+  --color-emeraldx-400: #34d399;
+  --color-emeraldx-500: #10b981;
+  --color-emeraldx-600: #059669;
+  --color-emeraldx-700: #047857;
+  --color-gold-300: #f1d188;
+  --color-gold-400: #e3b85e;
+  --color-gold-500: #d4a843;
+  --color-gold-600: #b8923a;
+  --color-ivory: #faf8f2;
+  --font-sans: 'Inter', sans-serif;
+  --font-quran: 'KFGQPC Nastaleeq', 'KFGQPC Uthman Taha Naskh', 'Amiri Quran', serif;
+  --font-arabic: 'Scheherazade New', serif;
+}
+
+
+/* Pattern background */
+.pattern-bg{
+  background-image: radial-gradient(circle at 1px 1px, rgba(212, 168, 67, 0.18) 1px, transparent 0);
+  background-size: 26px 26px;
+}
+
+
+/* Glass effect */
+
+.glass{
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
