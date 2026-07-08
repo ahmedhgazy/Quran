@@ -1,0 +1,285 @@
+<section class="relative overflow-hidden pattern-bg">
+  <div class="max-w-4xl mx-auto px-4 pt-16 pb-12 text-center relative">
+    <p
+      class="font-quran text-3xl md:text-4xl text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)] mb-3"
+    >
+      بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+    </p>
+    <h1
+      class="text-3xl md:text-5xl font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] tracking-tight"
+    >
+      {{ 'HOME.TITLE' | translate }}
+    </h1>
+    <p class="mt-3 text-slate-500 dark:text-slate-400">
+      {{ 'HOME.DESCRIPTION' | translate }}
+    </p>
+    <div class="mt-8 max-w-xl mx-auto relative">
+      <input
+        class="input !py-4 !pr-14 ltr:!pr-14 rtl:!pl-14 rtl:!pr-14 shadow-xl shadow-[var(--color-gold-500)]/5"
+        [placeholder]="'SEARCH.PLACEHOLDER' | translate"
+        (focus)="onSearchFocus()"
+        aria-label="Search the Quran"
+      />
+      <button
+        class="absolute right-2 ltr:right-2 rtl:left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] text-white"
+        aria-label="Search"
+        (click)="onSearchFocus()"
+      >
+        ⌕
+      </button>
+    </div>
+    <div class="mt-6 flex justify-center">
+      <button
+        (click)="navSidebar.toggleSidebar()"
+        class="flex items-center gap-2 border border-[var(--color-gold-500)]/30 hover:border-[var(--color-gold-500)]/60 bg-white/70 dark:bg-[var(--color-night-900)]/70 hover:bg-white dark:hover:bg-[var(--color-night-900)] px-6 py-3 rounded-2xl text-xs font-semibold text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)] transition shadow-md hover:shadow-lg shadow-[var(--color-gold-500)]/5 hover:scale-[1.02] cursor-pointer"
+      >
+        <span class="text-sm">🧭</span>
+        <span>{{ 'NAV.NAVIGATE_QURAN' | translate }}</span>
+      </button>
+    </div>
+    <div class="mt-10 grid grid-cols-4 sm:grid-cols-8 gap-3 text-center">
+      @for (s of stats; track s.labelKey) {
+        <div
+          class="rounded-2xl border border-[var(--color-gold-500)]/25 bg-white/70 dark:bg-[var(--color-night-900)]/60 py-3 shadow-sm"
+        >
+          <p
+            class="text-lg font-bold text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)]"
+          >
+            {{ s.value }}
+          </p>
+          <p class="text-[9px] uppercase tracking-widest text-slate-400">
+            {{ s.labelKey | translate }}
+          </p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto px-4 mb-14">
+  <div
+    class="rounded-3xl border border-[var(--color-gold-500)]/25 bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-night-800)] text-[var(--color-ivory)] p-8 md:p-10 shadow-2xl shadow-[var(--color-emeraldx-700)]/20 relative overflow-hidden"
+  >
+    <div
+      class="absolute -right-8 -top-8 w-40 h-40 rounded-full border-[18px] border-[var(--color-gold-500)]/10"
+    ></div>
+    <p class="text-[11px] tracking-[.25em] uppercase text-[var(--color-gold-300)] mb-4">
+      {{ 'HOME.AYAH_OF_DAY' | translate }}
+    </p>
+    <p class="font-quran text-2xl md:text-3xl leading-loose text-right" dir="rtl">
+      فَإِنَّ مَعَ الْعُسْرِ يُسْرًا
+    </p>
+    <p class="mt-4 text-sm text-emerald-100/90 italic">"{{ 'HOME.AYAH_TEXT' | translate }}"</p>
+    <p class="mt-2 text-xs text-[var(--color-gold-300)]">
+      {{ 'HOME.AYAH_REF' | translate }}
+    </p>
+  </div>
+</div>
+
+<section class="max-w-7xl mx-auto px-4 pb-20">
+  <h2 class="text-2xl font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mb-6">
+    {{ 'HOME.BROWSE' | translate }}
+  </h2>
+
+  <div
+    class="flex gap-1 p-1 mb-8 rounded-2xl bg-[var(--color-night-900)]/5 dark:bg-[var(--color-ivory)]/5 border border-[var(--color-gold-500)]/20 text-xs sm:text-sm font-medium overflow-x-auto"
+    role="tablist"
+  >
+    @for (tab of tabs; track tab.key) {
+      <button
+        role="tab"
+        [attr.aria-selected]="activeTab() === tab.key"
+        [class]="
+          activeTab() === tab.key
+            ? 'tab-active px-4 py-2 rounded-xl shrink-0'
+            : 'px-4 py-2 rounded-xl text-slate-500 transition shrink-0 hover:text-[var(--color-emeraldx-600)]'
+        "
+        (click)="switchTab(tab.key)"
+      >
+        {{ tab.labelKey | translate }}
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <div class="skeleton h-24 rounded-2xl"></div>
+      }
+    </div>
+  } @else {
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 animate-fade-in">
+      @if (activeTab() === 'surah') {
+        @for (s of surahs(); track s.number) {
+          <a [routerLink]="['/surah', s.number]" class="card p-5 cursor-pointer block">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-11 h-11 rotate-45 rounded-lg bg-gradient-to-br from-[var(--color-emeraldx-700)]/10 to-[var(--color-gold-500)]/10 border border-[var(--color-gold-500)]/30 flex items-center justify-center animate-none"
+                >
+                  <span class="-rotate-45 text-sm font-bold text-[var(--color-emeraldx-700)]">
+                    {{ s.number }}
+                  </span>
+                </div>
+                <div>
+                  <p
+                    class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]"
+                  >
+                    {{ s.nameEnglish }}
+                  </p>
+                  <p class="text-xs text-slate-400">
+                    {{ s.nameTransliteration }} · {{ s.revelationType }} · {{ s.ayahCount }}
+                    {{ 'HOME.SURAH_LIST.AYAH_COUNT' | translate }}
+                  </p>
+                </div>
+              </div>
+              <p class="font-quran text-2xl text-[var(--color-gold-600)]">
+                {{ s.nameArabic }}
+              </p>
+            </div>
+          </a>
+        }
+      }
+
+      @if (activeTab() === 'juz') {
+        @for (j of juzs(); track j.number) {
+          <a [routerLink]="['/surah', j.startSurahNumber]" class="card p-5 cursor-pointer block">
+            <p class="text-[10px] uppercase tracking-widest text-[var(--color-gold-600)] mb-1">
+              {{ 'HOME.TABS.JUZ' | translate }} {{ j.number }}
+            </p>
+            <p class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]">
+              {{ 'HOME.BEGINS' | translate }}: {{ j.startSurahName }} {{ j.startAyahNumber }}
+            </p>
+          </a>
+        }
+      }
+
+      @if (activeTab() === 'hizb') {
+        @for (h of hizbs(); track h.hizbNumber) {
+          <div class="card p-5">
+            <p class="text-[10px] uppercase tracking-widest text-[var(--color-gold-600)] mb-1">
+              {{ 'HOME.TABS.HIZB' | translate }} {{ h.hizbNumber }}
+            </p>
+            <p class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]">
+              {{ 'HOME.TABS.JUZ' | translate }} {{ h.juzNumber }} · {{ h.quarters.length }}
+              {{ 'HOME.QUARTERS' | translate }}
+            </p>
+          </div>
+        }
+      }
+
+      @if (activeTab() === 'quarter') {
+        @for (q of quarters(); track q.quarterIndex) {
+          <div class="card p-5">
+            <p class="text-[10px] uppercase tracking-widest text-[var(--color-gold-600)] mb-1">
+              {{ 'HOME.TABS.RUB' | translate }} {{ q.quarterIndex }} ۞
+            </p>
+            <p class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]">
+              {{ q.startSurahName }} {{ q.startAyahNumber }}
+            </p>
+            <p class="text-xs text-slate-400 mt-1">
+              {{ 'HOME.TABS.HIZB' | translate }} {{ q.hizbNumber }} ·
+              {{ 'HOME.TABS.JUZ' | translate }} {{ q.juzNumber }}
+            </p>
+          </div>
+        }
+      }
+
+      @if (activeTab() === 'ruku') {
+        @for (r of rukus(); track r.number) {
+          <div class="card p-5">
+            <p class="text-[10px] uppercase tracking-widest text-[var(--color-gold-600)] mb-1">
+              {{ 'HOME.TABS.RUKU' | translate }} {{ r.number }}
+            </p>
+            <p class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]">
+              {{ r.startSurahName }} · {{ 'READER.AYAH' | translate }} {{ r.startAyahNumber }}
+            </p>
+          </div>
+        }
+      }
+
+      @if (activeTab() === 'manzil') {
+        @for (m of manzils(); track m.number) {
+          <a [routerLink]="['/surah', m.startSurahNumber]" class="card p-5 cursor-pointer block">
+            <p class="text-[10px] uppercase tracking-widest text-[var(--color-gold-600)] mb-1">
+              {{ 'HOME.TABS.MANZIL' | translate }} {{ m.number }}
+            </p>
+            <p class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]">
+              {{ 'HOME.BEGINS' | translate }}: {{ m.startSurahName }}
+            </p>
+            <p class="text-xs text-slate-400 mt-1">
+              {{ 'HOME.MANZIL_DESC' | translate }}
+            </p>
+          </a>
+        }
+      }
+
+      @if (activeTab() === 'page') {
+        @for (p of pages(); track p.pageNumber) {
+          <div class="card p-5">
+            <p class="text-[10px] uppercase tracking-widest text-[var(--color-gold-600)] mb-1">
+              {{ 'HOME.TABS.PAGE' | translate }} {{ p.pageNumber }}
+            </p>
+            <p class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]">
+              {{ 'HOME.TABS.SURAH' | translate }} {{ p.startSurahNumber }}: {{ p.startAyahNumber }}
+            </p>
+          </div>
+        }
+      }
+
+      @if (activeTab() === 'sajdah') {
+        @for (a of sajdahs(); track a.ayahNumberGlobal) {
+          <a [routerLink]="['/surah', a.surahNumber]" class="card p-5 cursor-pointer block">
+            <p class="text-[10px] uppercase tracking-widest text-[var(--color-gold-600)] mb-1">
+              {{ 'HOME.TABS.SAJDAH' | translate }} ۩
+            </p>
+            <p class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]">
+              {{ a.surahNameEnglish }} {{ a.surahNumber }}:{{ a.ayahNumberInSurah }}
+            </p>
+            <p class="text-xs text-slate-400 mt-1">
+              {{ a.sajdahType ?? ('HOME.TABS.SAJDAH' | translate) }}
+            </p>
+          </a>
+        }
+      }
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="mt-12 flex justify-center items-center gap-2 animate-fade-in">
+        <button
+          [disabled]="currentPage() === 1"
+          (click)="changePage(currentPage() - 1)"
+          class="w-10 h-10 rounded-xl border border-[var(--color-gold-500)]/30 hover:border-[var(--color-emeraldx-500)] hover:bg-[var(--color-emeraldx-500)]/5 text-[var(--color-gold-600)] transition flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+          aria-label="Previous Page"
+        >
+          ←
+        </button>
+
+        <div class="flex gap-1.5">
+          @for (p of getVisiblePages(); track p) {
+            <button
+              (click)="changePage(p)"
+              class="w-10 h-10 rounded-xl transition flex items-center justify-center font-semibold text-xs cursor-pointer"
+              [class]="
+                p === currentPage()
+                  ? 'bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] text-white shadow-md shadow-[var(--color-emeraldx-600)]/30'
+                  : 'border border-[var(--color-gold-500)]/20 text-slate-500 hover:text-[var(--color-emeraldx-600)] hover:border-[var(--color-emeraldx-500)]/55 bg-white/50 dark:bg-[var(--color-night-900)]/50'
+              "
+            >
+              {{ p }}
+            </button>
+          }
+        </div>
+
+        <button
+          [disabled]="currentPage() === totalPages()"
+          (click)="changePage(currentPage() + 1)"
+          class="w-10 h-10 rounded-xl border border-[var(--color-gold-500)]/30 hover:border-[var(--color-emeraldx-500)] hover:bg-[var(--color-emeraldx-500)]/5 text-[var(--color-gold-600)] transition flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+          aria-label="Next Page"
+        >
+          →
+        </button>
+      </div>
+    }
+  }
+</section>

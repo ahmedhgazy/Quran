@@ -1,0 +1,349 @@
+<div class="fixed top-16 left-0 right-0 z-40 h-[3px] bg-[var(--color-gold-500)]/10">
+  <div
+    class="h-full bg-gradient-to-r from-[var(--color-emeraldx-600)] via-[var(--color-gold-400)] to-[var(--color-emeraldx-500)] transition-all duration-150 ease-out"
+    [style.width.%]="scrollProgress()"
+  ></div>
+</div>
+
+@if (loading()) {
+  <div class="max-w-2xl mx-auto px-6 py-16 space-y-6">
+    <div class="skeleton h-16 w-64 mx-auto"></div>
+    @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+      <div class="skeleton h-10 w-full"></div>
+    }
+  </div>
+} @else if (surah(); as s) {
+  <section class="max-w-2xl lg:max-w-5xl mx-auto px-6 py-12 pb-32 animate-fade-in">
+    <div class="text-center mb-12">
+      <div class="flex justify-center gap-2 mb-6">
+        <a [routerLink]="['/surah', surahNumber()]" class="btn-ghost !py-2 !px-4 !text-xs">
+          📖 {{ 'READER.STUDY_MODE' | translate }}
+        </a>
+        <span class="btn !py-2 !px-4 !text-xs pointer-events-none">
+          📜 {{ 'READER.READING_MODE' | translate }}
+        </span>
+      </div>
+
+      <div class="flex items-center justify-center gap-4 mb-6">
+        <div
+          class="h-px flex-1 max-w-20 bg-gradient-to-r from-transparent to-[var(--color-gold-500)]"
+        ></div>
+        <div
+          class="w-12 h-12 rounded-full border-2 border-[var(--color-gold-500)]/40 flex items-center justify-center"
+        >
+          <span class="font-quran text-lg text-[var(--color-gold-500)]">{{
+            toArabicNum(s.number)
+          }}</span>
+        </div>
+        <div
+          class="h-px flex-1 max-w-20 bg-gradient-to-l from-transparent to-[var(--color-gold-500)]"
+        ></div>
+      </div>
+
+      <h1
+        class="font-quran text-5xl text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mb-3"
+      >
+        {{ s.nameArabic }}
+      </h1>
+      <p class="text-sm text-slate-500">{{ s.nameTransliteration }} · {{ s.nameEnglish }}</p>
+      <p class="text-xs text-slate-400 mt-1">
+        {{
+          s.revelationType === 'Meccan'
+            ? ('HOME.SURAH_LIST.MECCAN' | translate)
+            : ('HOME.SURAH_LIST.MEDINAN' | translate)
+        }}
+        · {{ s.ayahCount }} {{ 'HOME.SURAH_LIST.AYAH_COUNT' | translate }} · {{ s.rukuCount }}
+        {{ 'HOME.TABS.RUKU' | translate }}
+      </p>
+
+      <div
+        class="w-48 h-px bg-gradient-to-r from-transparent via-[var(--color-gold-500)]/50 to-transparent mt-6 mx-auto"
+      ></div>
+    </div>
+
+    @if (s.number !== 9 && s.number !== 1) {
+      <p
+        class="font-quran text-3xl text-center text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)] mb-10 leading-relaxed"
+        dir="rtl"
+      >
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </p>
+    }
+
+    <div
+      #containerCard
+      class="card p-8 md:p-14 mb-8 bg-[#faf8f5] dark:bg-[var(--color-night-950)] border-2 border-[var(--color-gold-500)]/25 shadow-2xl relative overflow-hidden"
+    >
+      <div
+        class="absolute inset-4 border border-[var(--color-gold-500)]/15 rounded-lg pointer-events-none"
+      ></div>
+      <div
+        class="absolute inset-5 border border-[var(--color-gold-500)]/5 rounded-lg pointer-events-none"
+      ></div>
+
+      <svg
+        class="w-8 h-8 text-[var(--color-gold-500)]/30 absolute top-4 left-4 pointer-events-none"
+        viewBox="0 0 32 32"
+        fill="none"
+      >
+        <path d="M2 2h30v2H4v28H2V2zm4 4h20v2H8v20H6V6z" fill="currentColor" />
+        <circle cx="5" cy="5" r="1.5" fill="currentColor" />
+      </svg>
+      <svg
+        class="w-8 h-8 text-[var(--color-gold-500)]/30 absolute top-4 right-4 rotate-90 pointer-events-none"
+        viewBox="0 0 32 32"
+        fill="none"
+      >
+        <path d="M2 2h30v2H4v28H2V2zm4 4h20v2H8v20H6V6z" fill="currentColor" />
+        <circle cx="5" cy="5" r="1.5" fill="currentColor" />
+      </svg>
+      <svg
+        class="w-8 h-8 text-[var(--color-gold-500)]/30 absolute bottom-4 left-4 -rotate-90 pointer-events-none"
+        viewBox="0 0 32 32"
+        fill="none"
+      >
+        <path d="M2 2h30v2H4v28H2V2zm4 4h20v2H8v20H6V6z" fill="currentColor" />
+        <circle cx="5" cy="5" r="1.5" fill="currentColor" />
+      </svg>
+      <svg
+        class="w-8 h-8 text-[var(--color-gold-500)]/30 absolute bottom-4 right-4 rotate-180 pointer-events-none"
+        viewBox="0 0 32 32"
+        fill="none"
+      >
+        <path d="M2 2h30v2H4v28H2V2zm4 4h20v2H8v20H6V6z" fill="currentColor" />
+        <circle cx="5" cy="5" r="1.5" fill="currentColor" />
+      </svg>
+
+      <div
+        dir="rtl"
+        class="font-quran text-[1.85rem] sm:text-[2.25rem] leading-[2.2] text-[var(--color-night-900)] dark:text-[var(--color-ivory)] text-justify px-2 relative z-10 selection:bg-[var(--color-gold-500)]/30"
+        style="word-break: keep-all; text-align-last: center"
+      >
+        @for (ayah of ayahs(); track ayah.ayahNumberGlobal; let i = $index) {
+          <span
+            class="relative inline transition-all duration-200 rounded-lg"
+            [class]="
+              activeAyahIdx() === i
+                ? 'bg-gradient-to-r from-[var(--color-emeraldx-600)]/10 to-[var(--color-emeraldx-600)]/5 dark:from-[var(--color-gold-500)]/10 dark:to-[var(--color-gold-500)]/5 text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)] shadow-[inset_0_0_12px_rgba(4,120,87,0.04)] ring-1 ring-[var(--color-emeraldx-600)]/15 dark:ring-[var(--color-gold-500)]/20'
+                : ''
+            "
+          >
+            @for (token of getWords(ayah, i); track token.wordIndex) {
+              <span
+                #wordEl
+                class="relative mushaf-word cursor-pointer rounded transition-colors duration-150"
+                [class]="
+                  activeAyahIdx() === i
+                    ? 'hover:text-[var(--color-gold-600)] dark:hover:text-[var(--color-gold-300)] hover:bg-[var(--color-gold-500)]/10'
+                    : 'hover:text-[var(--color-emeraldx-600)] dark:hover:text-[var(--color-emeraldx-400)] hover:bg-[var(--color-emeraldx-600)]/5'
+                "
+                (click)="onWordClick($event, i, token.wordIndex, wordEl, containerCard)"
+              >
+                {{ token.word }} </span
+              ><span class="select-none"> </span>
+            }
+
+            <span
+              #endMarkerEl
+              class="ayah-end-marker inline-flex items-center justify-center mx-1.5 cursor-pointer align-middle select-none relative hover:scale-110 active:scale-95 transition-transform duration-200"
+              [class.scale-105]="activeAyahIdx() === i"
+              (click)="onWordClick($event, i, null, endMarkerEl, containerCard)"
+            >
+              <span
+                class="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 relative"
+              >
+                <svg class="w-full h-full" viewBox="0 0 50 50" fill="none">
+                  <circle
+                    cx="25"
+                    cy="25"
+                    r="22"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                    class="text-[var(--color-gold-500)]"
+                  />
+                  <circle
+                    cx="25"
+                    cy="25"
+                    r="18"
+                    stroke="currentColor"
+                    stroke-width="0.7"
+                    class="text-[var(--color-gold-500)]/60"
+                  />
+                  <circle
+                    cx="25"
+                    cy="3"
+                    r="2"
+                    fill="currentColor"
+                    class="text-[var(--color-gold-500)]"
+                  />
+                  <circle
+                    cx="25"
+                    cy="47"
+                    r="2"
+                    fill="currentColor"
+                    class="text-[var(--color-gold-500)]"
+                  />
+                  <circle
+                    cx="3"
+                    cy="25"
+                    r="2"
+                    fill="currentColor"
+                    class="text-[var(--color-gold-500)]"
+                  />
+                  <circle
+                    cx="47"
+                    cy="25"
+                    r="2"
+                    fill="currentColor"
+                    class="text-[var(--color-gold-500)]"
+                  />
+                </svg>
+                <span
+                  class="absolute inset-0 flex items-center justify-center font-quran text-xs text-[var(--color-gold-600)] dark:text-[var(--color-gold-400)] font-semibold"
+                >
+                  {{ toArabicNum(ayah.ayahNumberInSurah) }}
+                </span>
+              </span>
+            </span>
+          </span>
+        }
+      </div>
+
+      @if (selectedAyah(); as ayah) {
+        <div
+          class="[&>*]:cursor-pointer absolute z-50 flex items-center gap-1.5 p-1 rounded-full bg-white dark:bg-[var(--color-night-950)] border border-[var(--color-gold-500)]/30 shadow-xl shadow-black/15 animate-fade-in text-[var(--color-night-900)] dark:text-white"
+          [style.top.px]="popoverTop()"
+          [style.left.px]="popoverLeft()"
+          (click)="$event.stopPropagation()"
+        >
+          <button
+            (click)="playFromAyah(ayah)"
+            class="w-6 h-6 rounded-full bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shrink-0"
+            [title]="'READER.PLAY_AYAH' | translate"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-3.5 h-3.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="openTafsirModal(ayah)"
+            class="w-6 h-6 rounded-full border border-[var(--color-gold-500)]/30 text-[var(--color-gold-600)] hover:bg-[var(--color-gold-500)]/10 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shrink-0"
+            [title]="'READER.TAFSIR_TRANS' | translate"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-3.5 h-3.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="bookmarkAyah(ayah)"
+            class="w-6 h-6 rounded-full border flex items-center justify-center hover:scale-105 active:scale-95 transition-all shrink-0"
+            [class]="
+              isBookmarked(ayah)
+                ? 'bg-[var(--color-gold-500)]/20 text-[var(--color-gold-700)] dark:text-[var(--color-gold-400)] border-[var(--color-gold-500)]/50'
+                : 'border-[var(--color-gold-500)]/30 text-[var(--color-gold-600)] hover:bg-[var(--color-gold-500)]/10'
+            "
+            [title]="
+              isBookmarked(ayah)
+                ? ('READER.REMOVE_BOOKMARK' | translate)
+                : ('READER.BOOKMARK_AYAH' | translate)
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              [attr.fill]="isBookmarked(ayah) ? 'currentColor' : 'none'"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-3.5 h-3.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="shareViaWhatsApp(ayah)"
+            class="w-6 h-6 rounded-full border border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/10 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shrink-0"
+            title="Share via WhatsApp"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              class="w-3.5 h-3.5"
+            >
+              <path
+                d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.967C16.63 2.022 14.162.993 11.53 1.002c-5.436 0-9.86 4.37-9.864 9.799-.001 1.77.472 3.498 1.373 5.06l-.97 3.547 3.665-.96c1.558.85 3.112 1.295 4.913 1.295zm11.758-7.79c-.3-.154-1.772-.872-2.046-.971-.274-.1-.474-.15-.674.15-.2.3-.778 1.002-.953 1.203-.175.2-.35.226-.65.073-.3-.153-1.268-.467-2.414-1.488-.893-.794-1.496-1.774-1.671-2.08-.175-.306-.019-.471.132-.622.137-.137.305-.355.457-.533.153-.178.203-.305.305-.51.102-.203.05-.38-.025-.533-.075-.152-.674-1.624-.924-2.227-.244-.59-.49-.51-.674-.52-.175-.01-.375-.01-.575-.01-.2 0-.525.075-.8.375-.275.3-1.05 1.026-1.05 2.5s1.075 2.9 1.225 3.1c.15.2 2.11 3.224 5.115 4.526.715.31 1.273.496 1.71.635.717.228 1.37.196 1.885.119.574-.086 1.772-.724 2.022-1.424.25-.7.25-1.3.175-1.424-.075-.1-.275-.15-.575-.304z"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="showActions.set(null); activeWordIdx.set(null); activeAyahIdx.set(null)"
+            class="w-6 h-6 rounded-full border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform shrink-0"
+            [title]="'READER.CLOSE' | translate"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-3.5 h-3.5"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="mt-12 flex justify-between text-sm">
+      @if (prevSurah(); as prev) {
+        <a [routerLink]="['/surah', prev, 'read']" class="btn-ghost">
+          ← {{ 'READER.PREV_SURAH' | translate }}
+        </a>
+      } @else {
+        <span></span>
+      }
+      @if (nextSurah(); as next) {
+        <a [routerLink]="['/surah', next, 'read']" class="btn">
+          {{ 'READER.NEXT_SURAH' | translate }} →
+        </a>
+      }
+    </div>
+  </section>
+}
+
+<app-ayah-modal
+  #modal
+  [open]="modalOpen()"
+  [surahNumber]="modalSurahNumber()"
+  [ayahNumber]="modalAyahNumber()"
+  [surahName]="modalSurahName()"
+  [arabicText]="modalArabicText()"
+  (close)="closeModal()"
+/>

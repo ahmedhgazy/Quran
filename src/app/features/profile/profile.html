@@ -1,0 +1,704 @@
+<section class="max-w-5xl mx-auto px-4 py-12 animate-fade-in space-y-8 pb-32">
+  <div
+    class="card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-gradient-to-br from-white to-slate-50/20 dark:from-[#0a1714] dark:to-[#060f0d]"
+  >
+    <div class="flex items-center gap-4">
+      <div
+        class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] flex items-center justify-center text-2xl text-[var(--color-gold-300)] font-bold shadow-lg shadow-[var(--color-emeraldx-600)]/30"
+      >
+        {{ (auth.username() ?? 'U').charAt(0).toUpperCase() }}
+      </div>
+      <div>
+        <h1
+          class="text-2xl font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] flex items-center gap-2"
+        >
+          <span>{{ 'PROFILE.GREETING' | translate }}, {{ auth.username() }}</span>
+          <svg
+            class="w-6 h-6 text-[var(--color-gold-500)] fill-current shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 3a6.1 6.1 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+        </h1>
+        <p class="text-sm text-slate-500">{{ auth.email() }}</p>
+      </div>
+    </div>
+
+    <button
+      (click)="auth.logout()"
+      class="btn-ghost !py-2 !px-4 !text-xs self-start sm:self-center border-red-500/30 text-red-550 hover:bg-red-500/10"
+    >
+      {{ 'NAV.SIGN_OUT' | translate }}
+    </button>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="card p-6 flex flex-col justify-between">
+      <div class="flex justify-between items-center mb-4">
+        <p
+          class="font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] flex items-center gap-2"
+        >
+          <svg
+            class="w-5 h-5 text-[var(--color-gold-500)] shrink-0"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="2" />
+          </svg>
+          <span>{{ 'HABIT.DAILY_GOAL' | translate }}</span>
+        </p>
+        <button
+          (click)="toggleGoalEdit()"
+          class="text-xs text-[var(--color-gold-600)] hover:underline font-semibold"
+        >
+          {{ showGoalEdit() ? ('READER.CLOSE' | translate) : ('HABIT.UPDATE_GOAL' | translate) }}
+        </button>
+      </div>
+
+      @if (showGoalEdit()) {
+        <div class="flex items-center gap-2 mb-4">
+          <input
+            type="number"
+            [(ngModel)]="editGoalValue"
+            min="1"
+            class="input !py-1.5 !px-3 text-xs w-24"
+          />
+          <button (click)="saveHabitGoal()" class="btn !py-1.5 !px-4 !text-xs font-bold">
+            {{ 'TAGS.SAVE' | translate }}
+          </button>
+        </div>
+      }
+
+      <div class="flex flex-col items-center justify-center py-4 relative">
+        @if (loadingHabit()) {
+          <div class="skeleton w-24 h-24 rounded-full"></div>
+        } @else if (habitStats(); as stats) {
+          <svg class="w-32 h-32 transform -rotate-90">
+            <circle
+              cx="64"
+              cy="64"
+              r="50"
+              stroke="rgba(212, 168, 67, 0.15)"
+              stroke-width="10"
+              fill="transparent"
+            />
+            <circle
+              cx="64"
+              cy="64"
+              r="50"
+              [attr.stroke]="
+                stats.todayVersesCount >= stats.dailyGoalVerses
+                  ? 'var(--color-emeraldx-500)'
+                  : 'var(--color-gold-500)'
+              "
+              stroke-width="10"
+              fill="transparent"
+              [attr.stroke-dasharray]="314.16"
+              [attr.stroke-dashoffset]="314.16 - (314.16 * stats.todayProgressPercentage) / 100"
+              stroke-linecap="round"
+              class="transition-all duration-1000 ease-out"
+            />
+          </svg>
+          <div class="absolute flex flex-col items-center">
+            <span
+              class="text-2xl font-black text-[var(--color-night-900)] dark:text-[var(--color-ivory)]"
+            >
+              {{ stats.todayVersesCount }}
+            </span>
+            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+              / {{ stats.dailyGoalVerses }} {{ 'HABIT.VERSES' | translate }}
+            </span>
+          </div>
+        }
+      </div>
+
+      <div class="text-center mt-2">
+        @if (habitStats(); as stats) {
+          @if (stats.todayVersesCount >= stats.dailyGoalVerses) {
+            <p class="text-xs text-[var(--color-emeraldx-600)] font-bold">
+              {{ 'HABIT.CONGRATS_GOAL' | translate }}
+            </p>
+          } @else {
+            <p class="text-xs text-slate-450 italic">
+              Read {{ stats.dailyGoalVerses - stats.todayVersesCount }} more verses today to reach
+              your target!
+            </p>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="card p-6 flex flex-col justify-between">
+      <p
+        class="font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mb-2 flex items-center gap-2"
+      >
+        <svg
+          class="w-5 h-5 text-orange-500 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 18a3.75 3.75 0 0 0 .495-7.467 5.99 5.99 0 0 0-1.925 3.546 5.974 5.974 0 0 1-2.133-1A3.75 3.75 0 0 0 12 18Z"
+          />
+        </svg>
+        <span>{{ 'HABIT.STREAK_COUNTER' | translate }}</span>
+      </p>
+
+      <div class="flex flex-col items-center justify-center py-6">
+        @if (loadingHabit()) {
+          <div class="skeleton w-16 h-20"></div>
+        } @else if (habitStats(); as stats) {
+          <div class="mb-2">
+            @if (stats.currentStreak > 0) {
+              <svg
+                class="w-14 h-14 filter drop-shadow-[0_4px_12px_rgba(239,68,68,0.2)] animate-bounce"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="flameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#f59e0b" />
+                    <stop offset="100%" stop-color="#ef4444" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"
+                  fill="url(#flameGrad)"
+                  stroke="transparent"
+                />
+              </svg>
+            } @else {
+              <svg
+                class="w-14 h-14 filter drop-shadow-[0_4px_12px_rgba(245,158,11,0.2)] animate-pulse"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#fef08a" />
+                    <stop offset="100%" stop-color="#eab308" />
+                  </linearGradient>
+                </defs>
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                  fill="url(#starGrad)"
+                  stroke="transparent"
+                />
+              </svg>
+            }
+          </div>
+          <h3 class="text-4xl font-black text-[var(--color-gold-500)]">
+            {{ stats.currentStreak }} {{ stats.currentStreak === 1 ? 'Day' : 'Days' }}
+          </h3>
+          <p class="text-xs text-slate-500 mt-1">
+            {{ 'HABIT.STREAK_DESC' | translate }}
+          </p>
+        }
+      </div>
+
+      <div
+        class="text-xs text-slate-400 text-center border-t dark:border-slate-800 pt-3 flex justify-between items-center"
+      >
+        <span>Longest Streak:</span>
+        <span
+          class="font-bold text-[var(--color-night-900)] dark:text-[var(--color-gold-300)] flex items-center gap-1"
+        >
+          <svg
+            class="w-4 h-4 text-[var(--color-gold-500)] shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z" />
+            <path d="M3 20h18" />
+          </svg>
+          <span>{{ habitStats()?.longestStreak }} Days</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="card p-6 flex flex-col justify-between">
+      <p
+        class="font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mb-4 flex items-center gap-2"
+      >
+        <svg
+          class="w-5 h-5 text-[var(--color-emeraldx-600)] shrink-0"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+        <span>{{ 'BOOKMARKS.LAST_READ' | translate }}</span>
+      </p>
+
+      <div class="flex-1 flex flex-col justify-center">
+        @if (lastRead(); as lr) {
+          <p class="text-lg font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)]">
+            {{ lr.surahNameEnglish }}
+          </p>
+          <p class="text-xs text-slate-400 mt-1">
+            Surah {{ lr.surahNumber }}:{{ lr.ayahNumber }} · Juz {{ lr.juzNumber }} · Page
+            {{ lr.pageNumber }}
+          </p>
+          <a
+            [routerLink]="['/surah', lr.surahNumber]"
+            [queryParams]="{ ayah: lr.ayahNumber }"
+            class="btn w-full mt-4 flex items-center justify-center gap-1.5 !py-2 !text-xs group"
+          >
+            <span>{{ 'BOOKMARKS.RESUME' | translate }}</span>
+            <svg
+              class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1 duration-200 rtl:rotate-180"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </a>
+        } @else {
+          <p class="text-sm text-slate-400">{{ 'PROFILE.START_READING' | translate }}</p>
+          <a
+            routerLink="/"
+            class="btn w-full mt-4 flex items-center justify-center gap-1.5 !py-2 !text-xs group"
+          >
+            <span>{{ 'BOOKMARKS.BROWSE_SURAHS' | translate }}</span>
+            <svg
+              class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1 duration-200 rtl:rotate-180"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-6 overflow-hidden">
+    <p
+      class="font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mb-4 flex items-center gap-2"
+    >
+      <svg
+        class="w-5 h-5 text-[var(--color-emeraldx-600)] shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" />
+      </svg>
+      <span>{{ 'HABIT.HEATMAP_TITLE' | translate }}</span>
+    </p>
+
+    @if (loadingHabit()) {
+      <div class="skeleton h-24 w-full"></div>
+    } @else {
+      <div class="overflow-x-auto pb-2">
+        <div class="min-w-[760px] flex gap-1.5 p-1">
+          @for (week of heatmapGrid(); track $index) {
+            <div class="flex flex-col gap-1.5">
+              @for (day of week; track day.dateStr) {
+                <div
+                  [class]="
+                    'w-3 h-3 rounded-sm transition-all hover:scale-125 hover:shadow-sm ' +
+                    day.intensityClass
+                  "
+                  [title]="day.tooltip"
+                ></div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div
+        class="flex items-center justify-end gap-1.5 text-[10px] text-slate-400 mt-2 font-medium"
+      >
+        <span>Less</span>
+        <span class="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-slate-800"></span>
+        <span class="w-2.5 h-2.5 rounded-sm bg-emerald-700/20"></span>
+        <span class="w-2.5 h-2.5 rounded-sm bg-emerald-700/40"></span>
+        <span class="w-2.5 h-2.5 rounded-sm bg-emerald-700/70"></span>
+        <span class="w-2.5 h-2.5 rounded-sm bg-emerald-700"></span>
+        <span>More</span>
+      </div>
+    }
+  </div>
+
+  <div class="card p-6">
+    <p
+      class="font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mb-4 flex items-center gap-2"
+    >
+      <svg
+        class="w-5 h-5 text-[var(--color-emeraldx-600)] shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <polyline points="9 16 11 18 15 14" />
+      </svg>
+      <span>{{ 'KHATM.PLANNER' | translate }}</span>
+    </p>
+
+    @if (loadingKhatm()) {
+      <div class="skeleton h-56 w-full"></div>
+    } @else {
+      @if (khatmPlan() === null) {
+        <div class="max-w-xl mx-auto space-y-5 py-4">
+          <div class="text-center max-w-md mx-auto mb-2">
+            <div class="relative w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+              <svg
+                class="w-12 h-12 text-[var(--color-gold-500)] filter drop-shadow-[0_4px_10px_rgba(212,168,67,0.2)]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 3a6.1 6.1 0 0 0 9 9 9 9 0 1 1-9-9Z"
+                  fill="var(--color-gold-500)"
+                  stroke="transparent"
+                />
+              </svg>
+            </div>
+            <h3
+              class="font-bold text-lg text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mt-2"
+            >
+              {{ 'KHATM.CREATE_GOAL' | translate }}
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">
+              Configure a customized reading target. The planner will calculate your daily page
+              quota and display an interactive checklist.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+              >
+                {{ 'KHATM.GOAL_NAME' | translate }}
+              </label>
+              <input type="text" [(ngModel)]="planWizardName" class="input text-sm" />
+            </div>
+
+            <div class="space-y-1.5">
+              <label
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block"
+              >
+                {{ 'KHATM.DURATION' | translate }}:
+                <span class="text-[var(--color-gold-500)] font-extrabold"
+                  >{{ planWizardDays }} {{ 'KHATM.DAYS' | translate }}</span
+                >
+              </label>
+              <input
+                type="range"
+                min="5"
+                max="365"
+                step="5"
+                [(ngModel)]="planWizardDays"
+                class="w-full accent-[var(--color-emeraldx-600)] cursor-pointer"
+              />
+              <div class="flex justify-between text-[10px] text-slate-400 font-semibold">
+                <span>5 days (Ramadan sprint)</span>
+                <span>1 year</span>
+              </div>
+            </div>
+
+            <div
+              class="p-4 rounded-xl border border-[var(--color-gold-500)]/20 bg-[var(--color-gold-500)]/5 flex justify-between items-center"
+            >
+              <div>
+                <p class="text-[10px] uppercase font-bold tracking-widest text-slate-400">
+                  {{ 'KHATM.TARGET_SPEED' | translate }}
+                </p>
+                <p
+                  class="text-xl font-black text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mt-0.5"
+                >
+                  {{ getCalculatedPace() }} {{ 'KHATM.PAGES_PER_DAY' | translate }}
+                </p>
+              </div>
+              <svg
+                class="w-8 h-8 text-[var(--color-gold-500)]/80 shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+            </div>
+
+            <button (click)="createKhatmPlan()" class="btn w-full font-bold">
+              {{ 'KHATM.CREATE_BTN' | translate }}
+            </button>
+          </div>
+        </div>
+      } @else if (khatmPlan(); as plan) {
+        <div class="space-y-6">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b dark:border-slate-800 pb-4"
+          >
+            <div>
+              <h3
+                class="font-extrabold text-lg text-[var(--color-night-900)] dark:text-[var(--color-ivory)]"
+              >
+                {{ plan.goalName }}
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Target pace:
+                <span class="font-bold text-[var(--color-gold-600)]">{{ plan.pagesPerDay }}</span>
+                {{ 'KHATM.PAGES_PER_DAY' | translate }}
+              </p>
+            </div>
+
+            <button
+              (click)="deleteKhatmPlan(plan.id)"
+              class="btn-ghost !py-1.5 !px-3.5 !text-[11px] self-start sm:self-center border-red-500/20 text-red-550 hover:bg-red-500/10 flex items-center gap-1.5"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <polyline points="3 6 5 6 21 6" />
+                <path
+                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                />
+              </svg>
+              <span>{{ 'KHATM.RESET_PLAN' | translate }}</span>
+            </button>
+          </div>
+
+          <div class="grid sm:grid-cols-4 gap-4">
+            <div
+              class="bg-slate-50/50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40 text-center"
+            >
+              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                {{ 'KHATM.PROGRESS' | translate }}
+              </p>
+              <p class="text-2xl font-black text-[var(--color-emeraldx-600)] mt-1">
+                {{ plan.progressPercentage }}%
+              </p>
+            </div>
+            <div
+              class="bg-slate-50/50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40 text-center"
+            >
+              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                {{ 'KHATM.PAGES_COMPLETED' | translate }}
+              </p>
+              <p class="text-2xl font-black text-slate-700 dark:text-slate-300 mt-1">
+                {{ plan.completedPagesCount }} / 604
+              </p>
+            </div>
+            <div
+              class="bg-slate-50/50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40 text-center"
+            >
+              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                {{ 'KHATM.PAGES_REMAINING' | translate }}
+              </p>
+              <p class="text-2xl font-black text-slate-700 dark:text-slate-300 mt-1">
+                {{ plan.remainingPagesCount }}
+              </p>
+            </div>
+            <div
+              class="bg-slate-50/50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40 text-center"
+            >
+              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                {{ 'KHATM.DAYS_LEFT' | translate }}
+              </p>
+              <p class="text-2xl font-black text-[var(--color-gold-600)] mt-1">
+                {{ getPlanDaysRemaining(plan) }} Days
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="p-5 rounded-2xl border border-[var(--color-gold-500)]/15 bg-[var(--color-gold-500)]/3 shadow-sm max-w-xl"
+          >
+            <p
+              class="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5"
+            >
+              <svg
+                class="w-4 h-4 text-[var(--color-gold-500)] shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              <span>{{ 'KHATM.QUICK_MARK' | translate }}</span>
+            </p>
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">{{ 'KHATM.START_PAGE' | translate }}</span>
+                <input
+                  type="number"
+                  [(ngModel)]="quickStartPage"
+                  min="1"
+                  max="604"
+                  class="input !py-1 !px-2 text-xs w-16"
+                />
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">{{ 'KHATM.END_PAGE' | translate }}</span>
+                <input
+                  type="number"
+                  [(ngModel)]="quickEndPage"
+                  min="1"
+                  max="604"
+                  class="input !py-1 !px-2 text-xs w-16"
+                />
+              </div>
+              <div class="flex items-center gap-1.5 ml-auto">
+                <button
+                  (click)="markKhatmPageRange(plan.id, true)"
+                  class="btn !py-1.5 !px-3.5 !text-xs !font-semibold flex items-center gap-1"
+                >
+                  <svg
+                    class="w-3.5 h-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{{ 'KHATM.MARK_READ' | translate }}</span>
+                </button>
+                <button
+                  (click)="markKhatmPageRange(plan.id, false)"
+                  class="btn-ghost !py-1.5 !px-3.5 !text-xs !font-semibold border-red-500/20 text-red-550 flex items-center gap-1"
+                >
+                  <svg
+                    class="w-3.5 h-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                  <span>{{ 'KHATM.MARK_UNREAD' | translate }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <p
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+              >
+                {{ 'KHATM.GRID_HELP' | translate }}
+              </p>
+              <span class="text-[10px] text-slate-450 font-bold">1..604 Pages</span>
+            </div>
+            <div
+              class="flex flex-wrap gap-1 max-h-56 overflow-y-auto p-3 border dark:border-slate-800/50 rounded-xl bg-slate-50/20 dark:bg-slate-900/10"
+            >
+              @for (p of getKhatmPagesArray(plan); track p.page) {
+                <button
+                  (click)="toggleKhatmPage(plan.id, p.page, !p.isRead)"
+                  [class]="
+                    'w-6 h-6 rounded-md text-[9px] font-black flex items-center justify-center transition-all hover:scale-110 ' +
+                    (p.isRead
+                      ? 'bg-[var(--color-emeraldx-600)] text-white shadow-sm shadow-[var(--color-emeraldx-600)]/20'
+                      : 'bg-white dark:bg-[#0a1714] border border-slate-200 dark:border-slate-800 text-slate-400 hover:border-[var(--color-gold-500)]')
+                  "
+                  [title]="'Page ' + p.page"
+                >
+                  {{ p.page }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</section>

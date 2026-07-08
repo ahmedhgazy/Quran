@@ -1,0 +1,79 @@
+<section class="max-w-3xl mx-auto px-4 py-12 pb-32 animate-fade-in">
+  <div
+    class="card !bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-night-800)] !border-0 text-[var(--color-ivory)] p-8 mb-8 flex items-center gap-5"
+  >
+    <div
+      class="w-20 h-20 rounded-2xl bg-white/10 border border-[var(--color-gold-300)]/30 flex items-center justify-center font-arabic text-4xl text-[var(--color-gold-300)] shrink-0"
+    >
+      {{
+        reciterId()
+          .charAt(reciterId().lastIndexOf('.') + 1)
+          .toUpperCase()
+      }}
+    </div>
+    <div class="flex-1 min-w-0">
+      <h1 class="text-2xl font-bold truncate text-emerald-100/80">{{ reciterId() }}</h1>
+      <p class="text-sm text-emerald-100/80">
+        {{ 'RECITERS.RECITER_DESC' | translate }}
+      </p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="space-y-3">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="skeleton h-16 w-full"></div>
+      }
+    </div>
+  } @else {
+    <div class="space-y-3">
+      @for (s of surahs(); track s.number) {
+        <div class="card p-4 flex items-center gap-4">
+          <span
+            class="w-9 h-9 shrink-0 rounded-lg border border-[var(--color-gold-500)]/30 flex items-center justify-center text-xs font-bold text-[var(--color-emeraldx-700)] animate-none"
+            >{{ s.number }}</span
+          >
+          <div class="flex-1 min-w-0">
+            <p
+              class="font-medium text-[var(--color-night-900)] dark:text-[var(--color-ivory)] text-sm"
+            >
+              {{ s.nameEnglish }}
+              <span class="font-quran text-[var(--color-gold-600)] ml-1">{{
+                s.nameArabic
+              }}</span>
+            </p>
+            <p class="text-[11px] text-slate-400">
+              {{ s.ayahCount }} {{ 'HOME.SURAH_LIST.AYAH_COUNT' | translate }} ·
+              {{
+                s.revelationType === 'Meccan'
+                  ? ('HOME.SURAH_LIST.MECCAN' | translate)
+                  : ('HOME.SURAH_LIST.MEDINAN' | translate)
+              }}
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              (click)="downloadSurah(s)"
+              class="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--color-gold-500)] to-[var(--color-gold-600)] text-white shadow-md shadow-[var(--color-gold-500)]/30 flex items-center justify-center"
+              [attr.aria-label]="'Download ' + s.nameEnglish"
+              title="Download"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </button>
+            <button
+              (click)="playSurah(s)"
+              class="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] text-white shadow-md shadow-[var(--color-emeraldx-600)]/30 flex items-center justify-center"
+              [attr.aria-label]="'Play ' + s.nameEnglish"
+            >
+              ▶
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</section>

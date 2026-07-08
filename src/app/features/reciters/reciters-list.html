@@ -1,0 +1,37 @@
+<section class="max-w-5xl mx-auto px-4 py-12 animate-fade-in">
+  <h1 class="text-2xl font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] mb-1">
+    {{ 'RECITERS.TITLE' | translate }}
+  </h1>
+  <p class="text-sm text-slate-500 mb-8">
+    {{ 'RECITERS.SUBTITLE' | translate }}
+  </p>
+
+  @if (loading()) {
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="skeleton h-20 w-full"></div>
+      }
+    </div>
+  } @else {
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (r of reciters(); track r.identifier) {
+        <a
+          [routerLink]="['/reciters', r.identifier]"
+          class="card p-5 flex items-center gap-4 cursor-pointer block"
+        >
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] flex items-center justify-center text-[var(--color-gold-300)] font-arabic text-xl shrink-0">
+            {{ r.name.charAt(0) }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] truncate">
+              {{ r.englishName }}
+            </p>
+            <p class="text-xs text-slate-400">
+              {{ r.language === 'ar' ? ('RECITERS.ARABIC' | translate) : r.language }} · Murattal
+            </p>
+          </div>
+        </a>
+      }
+    </div>
+  }
+</section>

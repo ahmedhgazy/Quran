@@ -1,0 +1,337 @@
+<section class="min-h-screen lg:grid lg:grid-cols-2 relative overflow-hidden">
+  <div
+    class="relative flex items-center justify-center p-8 lg:p-16 bg-gradient-to-br from-[var(--color-emeraldx-50)] via-white to-[var(--color-gold-50)] dark:from-[var(--color-emeraldx-800)] dark:via-[var(--color-emeraldx-700)] dark:to-[var(--color-emeraldx-600)] pattern-bg overflow-hidden"
+  >
+    <div
+      class="absolute -top-16 -right-16 w-56 h-56 rounded-full border-[20px] border-[var(--color-gold-500)]/10 dark:border-[var(--color-gold-500)]/15 pointer-events-none"
+    ></div>
+    <div
+      class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-[var(--color-emeraldx-200)]/40 dark:bg-[var(--color-emeraldx-500)]/30 blur-3xl pointer-events-none"
+    ></div>
+    <div
+      class="absolute top-1/3 -right-10 w-40 h-40 rounded-full bg-[var(--color-gold-500)]/10 dark:bg-[var(--color-gold-500)]/8 blur-2xl pointer-events-none"
+    ></div>
+
+    <div class="relative z-10 text-center max-w-sm animate-fade-in">
+      <div
+        class="w-20 h-20 mx-auto rounded-3xl bg-white/60 dark:bg-white/10 backdrop-blur-sm flex items-center justify-center text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-300)] font-arabic text-4xl shadow-xl shadow-[var(--color-emeraldx-600)]/10 dark:shadow-2xl dark:shadow-black/20 mb-6 border border-[var(--color-emeraldx-200)] dark:border-white/10"
+      >
+        ق
+      </div>
+
+      <p class="font-quran text-2xl text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)] mb-5 leading-relaxed">
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </p>
+
+      <h2 class="text-3xl font-semibold mb-5 text-[var(--color-night-800)] dark:text-white">
+        السَّلامُ عَلَيْكُم ورَحْمَةُ اللهِ وَبَرَكاتُهُ
+      </h2>
+
+      <img
+        src="assets/imgs/iqraa.png"
+        alt="Iqraa"
+        class="mx-auto mb-10 max-w-[400px] h-auto"
+      />
+
+      <div class="mt-10 lg:hidden">
+        <div
+          class="inline-flex items-center gap-1.5 bg-white/70 dark:bg-white/10 backdrop-blur-sm border border-[var(--color-emeraldx-200)] dark:border-white/10 px-5 py-3 rounded-2xl"
+        >
+          <span class="text-sm text-[var(--color-night-600)] dark:text-white/70">{{ 'AUTH.ALREADY_HAVE_ACCOUNT' | translate }}</span>
+          <a
+            routerLink="/login"
+            class="text-sm font-semibold text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)] hover:underline"
+          >
+            {{ 'AUTH.LOGIN_LINK' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="relative flex items-center justify-center p-6 lg:p-12 bg-[var(--color-ivory)] dark:bg-[#0a1714] overflow-hidden"
+  >
+    <div
+      class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[var(--color-gold-500)]/40 to-transparent pointer-events-none"
+    ></div>
+
+    <div
+      class="absolute -bottom-32 -right-32 w-72 h-72 rounded-full bg-[var(--color-emeraldx-600)]/5 blur-3xl pointer-events-none"
+    ></div>
+
+    <div class="w-full max-w-2xl relative animate-fade-in">
+      <div class="text-center mb-6">
+        <div
+          class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] flex items-center justify-center text-[var(--color-gold-300)] font-arabic text-2xl shadow-xl shadow-[var(--color-emeraldx-600)]/30 mb-4 lg:hidden"
+        >
+          ق
+        </div>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-[var(--color-emeraldx-700)] via-[var(--color-gold-500)] to-[var(--color-emeraldx-600)] dark:from-[var(--color-gold-400)] dark:via-[var(--color-emeraldx-400)] dark:to-[var(--color-gold-300)] bg-clip-text text-transparent animate-gradient">
+          {{ 'AUTH.REGISTER_TITLE' | translate }}
+        </h1>
+      </div>
+
+      <div
+        class="mx-auto mb-6 w-32 h-[1.5px] bg-gradient-to-r from-transparent via-[var(--color-gold-500)]/50 to-transparent"
+      ></div>
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        class="card glass !rounded-3xl !bg-white/95 dark:!bg-[#0f1e1a]/95 !border-[var(--color-gold-500)]/25 p-8 s"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5">
+          <div class="mb-4">
+            <label
+              for="reg-name"
+              class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5"
+            >
+              {{ 'AUTH.USERNAME' | translate }}
+            </label>
+            <div class="relative">
+              <span
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"
+                >👤</span
+              >
+              <input
+                id="reg-name"
+                formControlName="username"
+                class="input !pl-10"
+                placeholder="Ahmed Mohamed"
+                autocomplete="name"
+              />
+            </div>
+            <div class="h-5 mt-1 text-xs">
+              @if (form.get('username')?.touched && form.get('username')?.invalid) {
+                @if (form.get('username')?.hasError('required')) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span>
+                    {{ 'AUTH.USERNAME_REQUIRED' | translate }}</span
+                  >
+                } @else if (form.get('username')?.hasError('minlength')) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span>
+                    {{ 'AUTH.USERNAME_MINLENGTH' | translate }}</span
+                  >
+                }
+              }
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="reg-email"
+              class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5"
+            >
+              {{ 'AUTH.EMAIL' | translate }}
+            </label>
+            <div class="relative">
+              <span
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"
+                >✉</span
+              >
+              <input
+                id="reg-email"
+                formControlName="email"
+                class="input !pl-10"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+              />
+            </div>
+            <div class="h-5 mt-1 text-xs">
+              @if (form.get('email')?.pending) {
+                <span class="text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                  <svg
+                    class="animate-spin h-3.5 w-3.5 text-[var(--color-emeraldx-600)]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  {{ 'AUTH.CHECKING_EMAIL' | translate }}
+                </span>
+              } @else if (form.get('email')?.touched && form.get('email')?.invalid) {
+                @if (form.get('email')?.hasError('required')) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span>
+                    {{ 'AUTH.EMAIL_REQUIRED' | translate }}</span
+                  >
+                } @else if (form.get('email')?.hasError('email')) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span> {{ 'AUTH.EMAIL_INVALID' | translate }}</span
+                  >
+                } @else if (form.get('email')?.hasError('emailExists')) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span> {{ 'AUTH.EMAIL_EXISTS' | translate }}</span
+                  >
+                }
+              } @else if (form.get('email')?.valid && form.get('email')?.value) {
+                <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400"
+                  ><span class="text-[11px]">✓</span> Email is available</span
+                >
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5">
+          <div class="mb-4">
+            <label
+              for="reg-password"
+              class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5"
+            >
+              {{ 'AUTH.PASSWORD' | translate }}
+            </label>
+            <div class="relative">
+              <span
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"
+                >🔒</span
+              >
+              <input
+                id="reg-password"
+                formControlName="password"
+                class="input !pl-10"
+                type="password"
+                placeholder="At least 8 characters"
+                autocomplete="new-password"
+              />
+            </div>
+            <div class="h-5 mt-1 text-xs">
+              @if (form.get('password')?.touched && form.get('password')?.invalid) {
+                @if (form.get('password')?.hasError('required')) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span>
+                    {{ 'AUTH.PASSWORD_REQUIRED' | translate }}</span
+                  >
+                } @else if (form.get('password')?.hasError('minlength')) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span>
+                    {{ 'AUTH.PASSWORD_MINLENGTH' | translate }}</span
+                  >
+                }
+              }
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="reg-confirm-password"
+              class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5"
+            >
+              {{ 'AUTH.CONFIRM_PASSWORD' | translate }}
+            </label>
+            <div class="relative">
+              <span
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"
+                >🔒</span
+              >
+              <input
+                id="reg-confirm-password"
+                formControlName="confirmPassword"
+                class="input !pl-10"
+                type="password"
+                placeholder="Confirm your password"
+                autocomplete="new-password"
+              />
+            </div>
+            <div class="h-5 mt-1 text-xs">
+              @if (form.get('confirmPassword')?.touched) {
+                @if (form.get('confirmPassword')?.hasError('required')) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span>
+                    {{ 'AUTH.PASSWORD_REQUIRED' | translate }}</span
+                  >
+                } @else if (
+                  form.hasError('passwordMismatch') && form.get('confirmPassword')?.value
+                ) {
+                  <span class="flex items-center gap-1 text-red-500"
+                    ><span class="text-[11px]">⚠</span>
+                    {{ 'AUTH.PASSWORD_MISMATCH' | translate }}</span
+                  >
+                }
+              }
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="mb-5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 p-3.5"
+        >
+          <div class="flex justify-between items-center text-xs mb-2">
+            <span class="text-slate-400">{{ 'AUTH.PASSWORD_STRENGTH' | translate }}</span>
+            @if (passwordValue()) {
+              <span
+                [class]="
+                  'font-semibold ' +
+                  (passwordStrength() === 1
+                    ? 'text-red-500'
+                    : passwordStrength() === 2
+                      ? 'text-orange-500'
+                      : passwordStrength() === 3
+                        ? 'text-yellow-500'
+                        : 'text-emerald-500')
+                "
+              >
+                {{ passwordStrengthLabel() | translate }}
+              </span>
+            }
+          </div>
+          <div class="flex gap-1.5">
+            @for (i of [1, 2, 3, 4]; track i) {
+              <div
+                class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                [class]="
+                  passwordValue() && i <= passwordStrength()
+                    ? passwordStrengthColor()
+                    : 'bg-slate-200 dark:bg-slate-800'
+                "
+              ></div>
+            }
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn w-full !rounded-2xl hover:scale-[1.01] transition-transform shadow-lg shadow-[var(--color-emeraldx-600)]/20"
+          [disabled]="form.invalid"
+        >
+          {{ 'AUTH.SIGN_UP_BTN' | translate }}
+        </button>
+
+        <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-5 text-center leading-relaxed">
+          {{ 'AUTH.TERMS_AGREE' | translate }}
+        </p>
+      </form>
+
+      <div class="mt-6 text-center hidden lg:block">
+        <div
+          class="inline-flex items-center gap-1.5 border border-[var(--color-gold-500)]/20 bg-white/70 dark:bg-[var(--color-night-900)]/60 px-5 py-3 rounded-2xl shadow-sm"
+        >
+          <span class="text-sm text-slate-500 dark:text-slate-400">{{
+            'AUTH.ALREADY_HAVE_ACCOUNT' | translate
+          }}</span>
+          <a
+            routerLink="/login"
+            class="text-sm font-semibold text-[var(--color-emeraldx-600)] dark:text-[var(--color-emeraldx-400)] hover:underline"
+          >
+            {{ 'AUTH.LOGIN_LINK' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
