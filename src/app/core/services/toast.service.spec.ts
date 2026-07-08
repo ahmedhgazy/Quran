@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ToastService, Toast } from './toast.service';
 
 describe('ToastService', () => {
@@ -96,22 +96,26 @@ describe('ToastService', () => {
   });
 
   describe('auto-dismiss', () => {
-    it('should auto-dismiss a toast after its duration elapses', fakeAsync(() => {
+    it('should auto-dismiss a toast after its duration elapses', () => {
+      vi.useFakeTimers();
       service.show('success', 'T', 'Auto-dismiss test', 1000);
       expect(service.toasts()).toHaveLength(1);
 
-      tick(999);
+      vi.advanceTimersByTime(999);
       expect(service.toasts()).toHaveLength(1);
 
-      tick(1);
+      vi.advanceTimersByTime(1);
       expect(service.toasts()).toHaveLength(0);
-    }));
+      vi.useRealTimers();
+    });
 
-    it('should not auto-dismiss when duration is 0', fakeAsync(() => {
+    it('should not auto-dismiss when duration is 0', () => {
+      vi.useFakeTimers();
       service.show('info', 'T', 'Persistent toast', 0);
-      tick(10000);
+      vi.advanceTimersByTime(10000);
       expect(service.toasts()).toHaveLength(1);
-    }));
+      vi.useRealTimers();
+    });
   });
 
   describe('dismiss()', () => {

@@ -5,13 +5,21 @@ describe('ReciterStateService', () => {
   let service: ReciterStateService;
 
   beforeEach(() => {
-    localStorage.clear();
+    const store: Record<string, string> = {};
+    vi.stubGlobal('localStorage', {
+      getItem: vi.fn((key: string) => store[key] ?? null),
+      setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
+      removeItem: vi.fn((key: string) => { delete store[key]; }),
+      clear: vi.fn(() => { for (const k in store) delete store[k]; }),
+      get length() { return Object.keys(store).length; },
+      key: vi.fn((i: number) => Object.keys(store)[i] ?? null),
+    });
     TestBed.configureTestingModule({});
     service = TestBed.inject(ReciterStateService);
   });
 
   afterEach(() => {
-    localStorage.clear();
+    vi.unstubAllGlobals();
   });
 
   it('should be created', () => {
