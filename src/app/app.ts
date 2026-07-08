@@ -47,6 +47,7 @@ export class App {
       )
       .subscribe((e) => {
         this.currentUrl.set(e.urlAfterRedirects);
+        window.scrollTo(0, 0);
       });
   }
 }
