@@ -1,0 +1,238 @@
+@if (isRendered()) {
+  <div
+    class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+    [class.animate-fade-in]="!isClosing()"
+    [class.animate-fade-out]="isClosing()"
+  >
+    <div
+      class="relative w-full max-w-lg bg-white/95 dark:bg-[#0a1714]/95 border border-[var(--color-gold-500)]/30 rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+      [class.animate-scale-in]="!isClosing()"
+      [class.animate-scale-out]="isClosing()"
+    >
+      <div
+        class="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05] flex items-center justify-center overflow-hidden"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 100"
+          class="w-[150%] h-[150%] animate-spin-slow"
+        >
+          <path
+            fill="currentColor"
+            d="M50 0l11 30 31-11-20 25 29 11-29 11 20 25-31-11-11 30-11-30-31 11 20-25-29-11 29-11-20-25 31 11z"
+          />
+        </svg>
+      </div>
+
+      <div
+        class="relative px-6 pt-8 pb-4 text-center shrink-0 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50"
+      >
+        <div
+          class="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] flex items-center justify-center text-[var(--color-gold-300)] font-arabic text-4xl shadow-xl shadow-[var(--color-emeraldx-600)]/30 mb-4 animate-pulse"
+        >
+          ق
+        </div>
+        <h2 class="font-quran text-2xl lg:text-3xl text-[var(--color-gold-600)] leading-normal">
+          {{ isArabic() ? 'الْقُرْآنُ الْكَرِيمُ' : 'Al-Quran Al-Kareem' }}
+        </h2>
+        <p
+          class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1"
+        >
+          {{
+            isArabic()
+              ? 'بوابة التلاوة والتدبر والمتابعة'
+              : 'Your Companion for Reading & Reflection'
+          }}
+        </p>
+      </div>
+
+      <div class="p-6 space-y-6 overflow-y-auto flex-1 text-start">
+        <div class="text-center">
+          <p
+            class="text-lg font-quran text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)]"
+          >
+            اَلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ
+          </p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            {{
+              isArabic()
+                ? 'مرحباً بك في تطبيق القرآن الكريم. نرجو أن يكون عوناً لك في رحلتك الروحية.'
+                : 'Welcome to the Noble Quran application. May it assist you in your spiritual journey.'
+            }}
+          </p>
+        </div>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800"
+        >
+          <div class="flex flex-col gap-1.5">
+            <label
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-medium"
+            >
+              🌐 {{ isArabic() ? 'لغة الواجهة' : 'Interface Language' }}
+            </label>
+            <div class="flex gap-1 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-xl">
+              <button
+                (click)="setLang('ar')"
+                class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                [class]="
+                  isArabic()
+                    ? 'bg-white dark:bg-[#0a1714] text-[var(--color-gold-600)] shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                "
+              >
+                العربية
+              </button>
+              <button
+                (click)="setLang('en')"
+                class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                [class]="
+                  !isArabic()
+                    ? 'bg-white dark:bg-[#0a1714] text-[var(--color-gold-600)] shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                "
+              >
+                English
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-medium"
+            >
+              🎨 {{ isArabic() ? 'المظهر والسمة' : 'Theme Setup' }}
+            </label>
+            <div class="flex gap-1 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-xl">
+              <button
+                (click)="setTheme('light')"
+                class="flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer"
+                [class]="
+                  activeTheme() === 'light'
+                    ? 'bg-white dark:bg-[#0a1714] text-[var(--color-gold-600)] shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                "
+              >
+                ☀️ {{ isArabic() ? 'ساطع' : 'Light' }}
+              </button>
+              <button
+                (click)="setTheme('dark')"
+                class="flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer"
+                [class]="
+                  activeTheme() === 'dark'
+                    ? 'bg-white dark:bg-[#0a1714] text-[var(--color-gold-600)] shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                "
+              >
+                🌙 {{ isArabic() ? 'ليلي' : 'Dark' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <p
+            class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block border-b border-slate-100 dark:border-slate-800 pb-1 font-medium"
+          >
+            🕌 {{ isArabic() ? 'أبرز مميزات التطبيق' : 'Key Features' }}
+          </p>
+
+          <div class="grid grid-cols-1 gap-3.5">
+            <div class="flex gap-3">
+              <div
+                class="w-8 h-8 rounded-xl bg-[var(--color-emeraldx-600)]/10 text-[var(--color-emeraldx-600)] flex items-center justify-center shrink-0"
+              >
+                📜
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-700 dark:text-slate-200">
+                  {{ isArabic() ? 'وضع المصحف الكامل' : 'Continuous Mushaf Flow' }}
+                </h4>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                  {{
+                    isArabic()
+                      ? 'قراءة متسلسلة للآيات كصفحات المصحف الشريف بجمالية فائقة وتظليل الكلمات الفردية.'
+                      : 'Read verses in a continuous document flow, highlighting active lines and reflecting on individual words.'
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <div
+                class="w-8 h-8 rounded-xl bg-[var(--color-emeraldx-600)]/10 text-[var(--color-emeraldx-600)] flex items-center justify-center shrink-0"
+              >
+                📅
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-700 dark:text-slate-200">
+                  {{ isArabic() ? 'مخطط ختم القرآن' : 'Custom Khatm Completion Planner' }}
+                </h4>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                  {{
+                    isArabic()
+                      ? 'حدد عدد الأيام وجدول قراءتك اليومي لمتابعة تقدمك عبر قائمة تدقيق مكونة من 604 صفحات.'
+                      : 'Set target goals (days/pages) and track your page progress with a grid checklist of the 604 Quran pages.'
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <div
+                class="w-8 h-8 rounded-xl bg-[var(--color-emeraldx-600)]/10 text-[var(--color-emeraldx-600)] flex items-center justify-center shrink-0"
+              >
+                🏷️
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-700 dark:text-slate-200">
+                  {{ isArabic() ? 'تنظيم وتصنيف الملاحظات' : 'Spiritual Folders & Reflections' }}
+                </h4>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                  {{
+                    isArabic()
+                      ? 'صنّف الآيات المفضلة في مجلدات ملونة مخصصة وسجل خواطرك وتفسيرك الروحاني.'
+                      : 'Organize your bookmarked verses into custom spiritual folders and write reflections next to the verses.'
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <div
+                class="w-8 h-8 rounded-xl bg-[var(--color-emeraldx-600)]/10 text-[var(--color-emeraldx-600)] flex items-center justify-center shrink-0"
+              >
+                📊
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-700 dark:text-slate-200">
+                  {{
+                    isArabic() ? 'متتبع الاستمرارية اليومية' : 'Spiritual Heatmap & Streak Tracker'
+                  }}
+                </h4>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                  {{
+                    isArabic()
+                      ? 'حافظ على وردك القرآني اليومي مع متتبع القراءة، وسلسلة الأيام المستمرة، ومخطط حراري لـ 365 يوماً.'
+                      : 'Build consistency using a daily verse progress ring, consecutive active day streaks, and a 365-day heatmap.'
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end shrink-0 bg-slate-50/50 dark:bg-slate-900/10"
+      >
+        <button
+          (click)="onGetStarted()"
+          class="w-full btn !py-3 !text-sm font-bold shadow-lg shadow-[var(--color-emeraldx-600)]/10 rounded-2xl hover:scale-[1.01] transition-transform cursor-pointer"
+        >
+          {{ isArabic() ? 'ابدأ القراءة والتدبر' : 'Start Reading & Reflecting' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

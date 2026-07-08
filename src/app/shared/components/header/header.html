@@ -1,0 +1,196 @@
+<header
+  class="sticky top-0 z-50 glass bg-[var(--color-ivory)]/80 dark:bg-[var(--color-night-950)]/80 border-b border-[var(--color-gold-500)]/20"
+>
+  <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      @if (isOnSurahRoute()) {
+        <button
+          (click)="reciterState.toggleSidebar()"
+          class="w-9 h-9 rounded-full border border-[var(--color-gold-500)]/30 hover:bg-[var(--color-emeraldx-600)]/10 transition text-[var(--color-emeraldx-600)] flex items-center justify-center text-sm"
+          aria-label="Select reciter"
+        >
+          🎙
+        </button>
+      }
+
+      <a routerLink="/" class="flex items-center gap-2.5" aria-label="Home">
+        <div
+          class="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-500)] flex items-center justify-center text-[var(--color-gold-300)] font-arabic text-xl shadow-lg shadow-[var(--color-emeraldx-600)]/30"
+        >
+          ﻕ
+        </div>
+        <div class="hidden sm:block">
+          <p
+            class="font-bold text-[var(--color-night-900)] dark:text-[var(--color-ivory)] leading-none"
+          >
+            {{ 'HOME.TITLE' | translate }}
+          </p>
+          <p class="text-[10px] tracking-[.2em] text-[var(--color-gold-600)] uppercase">
+            {{ 'HOME.SUBTITLE' | translate }}
+          </p>
+        </div>
+      </a>
+    </div>
+
+    <nav
+      class="hidden md:flex rtl:font-arabic xl:rtl:font-semibold items-center gap-6 text-sm font-medium"
+      aria-label="Main navigation"
+    >
+      <a
+        routerLink="/"
+        routerLinkActive="text-[var(--color-emerald-600)]"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="hover:text-[var(--color-emeraldx-600)] transition"
+        >{{ 'NAV.QURAN' | translate }}</a
+      >
+      <a
+        routerLink="/reciters"
+        routerLinkActive="text-[var(--color-emerald-600)]"
+        class="hover:text-[var(--color-emeraldx-600)] transition"
+        >{{ 'NAV.RECITERS' | translate }}</a
+      >
+      <a
+        routerLink="/search"
+        routerLinkActive="text-[var(--color-emerald-600)]"
+        class="hover:text-[var(--color-emerald-600)] transition"
+        >{{ 'NAV.SEARCH' | translate }}</a
+      >
+      @if (auth.isAuthenticated()) {
+        <a
+          routerLink="/bookmarks"
+          routerLinkActive="text-[var(--color-emerald-600)]"
+          class="hover:text-[var(--color-emerald-600)] transition"
+          >{{ 'NAV.BOOKMARKS' | translate }}</a
+        >
+        <a
+          routerLink="/profile"
+          routerLinkActive="text-[var(--color-emerald-600)]"
+          class="hover:text-[var(--color-emerald-600)] transition"
+          >{{ 'NAV.PROFILE' | translate }}</a
+        >
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      @if (isOnSurahRoute()) {
+        <button
+          (click)="reciterState.toggleSidebar()"
+          class="hidden lg:flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full border border-[var(--color-gold-500)]/30 text-[var(--color-gold-600)] hover:bg-[var(--color-gold-500)]/5 transition"
+        >
+          🎙 {{ reciterState.selectedName() }}
+        </button>
+      }
+
+      <app-language-switcher class="hidden sm:block" />
+
+      <button
+        (click)="navSidebar.toggleSidebar()"
+        class="w-9 h-9 rounded-full border border-[var(--color-gold-500)]/30 hover:bg-[var(--color-gold-500)]/10 transition text-[var(--color-gold-600)] flex items-center justify-center cursor-pointer"
+        [attr.aria-label]="'NAVIGATION_SIDEBAR.TITLE' | translate"
+      >
+        🧭
+      </button>
+
+      <button
+        (click)="theme.toggle()"
+        class="w-9 h-9 rounded-full border border-[var(--color-gold-500)]/30 hover:bg-[var(--color-gold-500)]/10 transition text-[var(--color-gold-600)] cursor-pointer"
+        [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
+        {{ theme.isDark() ? '☀' : '☾' }}
+      </button>
+
+      @if (auth.isAuthenticated()) {
+        <button
+          (click)="auth.logout()"
+          class="hidden sm:block text-sm px-4 py-2 rounded-full border border-[var(--color-gold-500)]/30 text-[var(--color-gold-600)] hover:bg-[var(--color-gold-500)]/10 font-medium transition"
+        >
+          {{ 'NAV.SIGN_OUT' | translate }}
+        </button>
+      } @else {
+        <a
+          routerLink="/login"
+          class="hidden sm:block text-sm px-4 py-2 rounded-full bg-[var(--color-emeraldx-600)] hover:bg-[var(--color-emeraldx-700)] text-white font-medium transition shadow-lg shadow-[var(--color-emeraldx-600)]/25"
+          >{{ 'NAV.SIGN_IN' | translate }}</a
+        >
+      }
+
+      <button
+        (click)="mobileMenuOpen.set(!mobileMenuOpen())"
+        class="md:hidden w-9 h-9 rounded-full border border-[var(--color-gold-500)]/30 text-[var(--color-gold-600)]"
+        aria-label="Toggle menu"
+      >
+        ☰
+      </button>
+    </div>
+  </div>
+
+  @if (mobileMenuOpen()) {
+    <nav
+      class="md:hidden border-t border-[var(--color-gold-500)]/20 p-4 flex flex-col gap-3 text-sm font-medium animate-fade-in"
+      aria-label="Mobile navigation"
+    >
+      <a
+        routerLink="/"
+        (click)="mobileMenuOpen.set(false)"
+        class="hover:text-[var(--color-emeraldx-600)] transition"
+        >{{ 'NAV.QURAN' | translate }}</a
+      >
+      <a
+        routerLink="/reciters"
+        (click)="mobileMenuOpen.set(false)"
+        class="hover:text-[var(--color-emeraldx-600)] transition"
+        >{{ 'NAV.RECITERS' | translate }}</a
+      >
+      <a
+        routerLink="/search"
+        (click)="mobileMenuOpen.set(false)"
+        class="hover:text-[var(--color-emeraldx-600)] transition"
+        >{{ 'NAV.SEARCH' | translate }}</a
+      >
+      @if (auth.isAuthenticated()) {
+        <a
+          routerLink="/bookmarks"
+          (click)="mobileMenuOpen.set(false)"
+          class="hover:text-[var(--color-emeraldx-600)] transition"
+          >{{ 'NAV.BOOKMARKS' | translate }}</a
+        >
+        <a
+          routerLink="/profile"
+          (click)="mobileMenuOpen.set(false)"
+          class="hover:text-[var(--color-emeraldx-600)] transition"
+          >{{ 'NAV.PROFILE' | translate }}</a
+        >
+      } @else {
+        <a
+          routerLink="/login"
+          (click)="mobileMenuOpen.set(false)"
+          class="hover:text-[var(--color-emeraldx-600)] transition"
+          >{{ 'NAV.SIGN_IN' | translate }}</a
+        >
+      }
+      @if (isOnSurahRoute()) {
+        <button
+          (click)="reciterState.toggleSidebar(); mobileMenuOpen.set(false)"
+          class="text-left rtl:text-right hover:text-[var(--color-emeraldx-600)] transition cursor-pointer"
+        >
+          🎙 {{ 'NAV.CHANGE_RECITER' | translate }}
+        </button>
+      }
+
+      <button
+        (click)="navSidebar.toggleSidebar(); mobileMenuOpen.set(false)"
+        class="text-left rtl:text-right hover:text-[var(--color-emeraldx-600)] transition flex items-center gap-2 cursor-pointer"
+      >
+        <span>🧭</span>
+        <span>{{ 'NAVIGATION_SIDEBAR.TITLE' | translate }}</span>
+      </button>
+
+      <div
+        class="border-t border-[var(--color-gold-500)]/15 pt-2 flex items-center justify-between"
+      >
+        <span class="text-xs text-[var(--color-gold-600)]">Language / اللغة</span>
+        <app-language-switcher />
+      </div>
+    </nav>
+  }
+</header>

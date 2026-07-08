@@ -1,0 +1,7 @@
+<button
+  (click)="lang.toggleLanguage()"
+  class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--color-gold-500)]/30 hover:bg-[var(--color-gold-500)]/10 text-[var(--color-gold-600)] transition text-xs font-semibold"
+  [attr.aria-label]="lang.isArabic() ? 'Switch to English' : 'تغيير إلى العربية'"
+>
+  🌐 <span>{{ lang.isArabic() ? 'English' : 'العربية' }}</span>
+</button>

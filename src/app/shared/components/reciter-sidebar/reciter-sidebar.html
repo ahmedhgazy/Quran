@@ -1,0 +1,112 @@
+    @if (state.sidebarOpen()) {
+      <div
+        class="fixed inset-0 z-[60] bg-black/40 transition-opacity duration-300"
+        [class]="state.sidebarOpen() ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+        (click)="state.closeSidebar()"
+        aria-hidden="true"
+      ></div>
+    }
+
+    <aside
+      class="fixed top-0 ltr:left-0 rtl:right-0 z-[70] h-full w-80 max-w-[85vw] bg-white dark:bg-[var(--color-night-900)] shadow-2xl shadow-black/20 transition-transform duration-300 ease-out flex flex-col"
+      [class]="state.sidebarOpen() ? 'translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full'"
+      role="dialog"
+      [attr.aria-label]="'SIDEBAR.SELECT_RECITER' | translate"
+    >
+      <div
+        class="p-6 bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-night-800)] text-white relative overflow-hidden shrink-0"
+      >
+        <div
+          class="absolute -right-6 -top-6 w-28 h-28 rounded-full border-[14px] border-[var(--color-gold-500)]/10"
+        ></div>
+        <div
+          class="absolute -left-4 -bottom-4 w-20 h-20 rounded-full border-[10px] border-[var(--color-emeraldx-400)]/10"
+        ></div>
+        <button
+          (click)="state.closeSidebar()"
+          class="absolute top-4 ltr:right-4 rtl:left-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center justify-center text-sm"
+          [attr.aria-label]="'SIDEBAR.CLOSE' | translate"
+        >
+          ✕
+        </button>
+        <p class="text-[10px] uppercase tracking-[.25em] text-[var(--color-gold-300)] mb-2">
+           {{ 'SIDEBAR.SELECT_RECITER' | translate }}
+        </p>
+        <p class="font-quran text-2xl text-[var(--color-gold-300)] mb-1" dir="rtl">
+          بِسْمِ اللَّهِ
+        </p>
+        <p class="text-sm text-emerald-100/80">{{ 'SIDEBAR.CHOOSE_RECITER' | translate }}</p>
+        @if (state.selectedReciter(); as r) {
+          <div class="mt-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10">
+            <div
+              class="w-8 h-8 rounded-full bg-[var(--color-gold-400)] flex items-center justify-center text-[var(--color-night-900)] font-bold text-xs"
+            >
+              {{ r.name.charAt(0) }}
+            </div>
+            <div class="flex-1 min-w-0 text-start">
+              <p class="text-xs font-medium truncate">{{ r.name }}</p>
+              <p class="text-[10px] text-emerald-200/70">{{ 'SIDEBAR.CURRENTLY_SELECTED' | translate }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="p-4 shrink-0">
+        <input
+          class="input !py-2.5 !text-xs"
+          [placeholder]="'SIDEBAR.SEARCH_PLACEHOLDER' | translate"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+          [attr.aria-label]="'SIDEBAR.SEARCH_PLACEHOLDER' | translate"
+        />
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-4 pb-4">
+        @for (r of filteredReciters(); track r.id) {
+          <button
+            (click)="state.selectReciter(r)"
+            class="w-full flex items-center gap-3 p-3 rounded-xl transition mb-1"
+            [class]="
+              state.selectedReciter().id === r.id
+                ? 'bg-gradient-to-r from-[var(--color-emeraldx-700)] to-[var(--color-emeraldx-600)] text-white shadow-lg shadow-[var(--color-emeraldx-600)]/30'
+                : 'hover:bg-[var(--color-gold-500)]/5'
+            "
+            [attr.aria-pressed]="state.selectedReciter().id === r.id"
+          >
+            <div
+              class="w-10 h-10 rounded-full flex items-center justify-center font-arabic text-lg shrink-0"
+              [class]="
+                state.selectedReciter().id === r.id
+                  ? 'bg-white/20 text-[var(--color-gold-300)]'
+                  : 'bg-gradient-to-br from-[var(--color-emeraldx-700)]/10 to-[var(--color-gold-500)]/10 border border-[var(--color-gold-500)]/30 text-[var(--color-gold-600)]'
+              "
+            >
+              {{ r.name.charAt(0) }}
+            </div>
+            <div class="flex-1 min-w-0 text-start">
+              <p
+                class="text-sm font-medium truncate"
+                [class]="
+                  state.selectedReciter().id === r.id
+                    ? ''
+                    : 'text-[var(--color-night-900)] dark:text-[var(--color-ivory)]'
+                "
+              >
+                {{ r.name }}
+              </p>
+              <p
+                class="text-[11px] truncate"
+                [class]="
+                  state.selectedReciter().id === r.id ? 'text-emerald-100/80' : 'text-slate-400'
+                "
+              >
+                {{ r.arabicName }} · {{ r.style }}
+              </p>
+            </div>
+            @if (state.selectedReciter().id === r.id) {
+              <span class="text-[var(--color-gold-300)] text-lg shrink-0">✓</span>
+            }
+          </button>
+        }
+      </div>
+    </aside>

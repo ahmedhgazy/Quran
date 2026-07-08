@@ -1,0 +1,93 @@
+<footer
+  class="relative  overflow-hidden border-t border-[var(--color-gold-500)]/15 bg-gradient-to-b from-white to-[var(--color-gold-500)]/5 dark:from-[var(--color-night-900)] dark:to-[var(--color-night-950)] pb-24 md:pb-28"
+>
+  <div
+    class="absolute inset-0 pointer-events-none opacity-[0.07] dark:opacity-[0.04] flex items-center justify-center"
+  >
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="islamic-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path
+            d="M30,0 L45,15 L60,30 L45,45 L30,60 L15,45 L0,30 L15,15 Z"
+            fill="none"
+            stroke="var(--color-gold-500)"
+            stroke-width="1.2"
+          />
+          <circle
+            cx="30"
+            cy="30"
+            r="4"
+            fill="none"
+            stroke="var(--color-gold-500)"
+            stroke-width="1"
+          />
+          <path
+            d="M30,0 L30,60 M0,30 L60,30"
+            fill="none"
+            stroke="var(--color-gold-500)"
+            stroke-width="0.8"
+            stroke-dasharray="2,2"
+          />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#islamic-grid)" />
+    </svg>
+  </div>
+
+  <div
+    class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[450px] sm:h-[450px] rounded-full border border-[var(--color-gold-500)]/10 dark:border-[var(--color-gold-500)]/5 pointer-events-none flex items-center justify-center"
+  >
+    <div
+      class="w-[85%] h-[85%] rounded-full border border-dashed border-[var(--color-gold-500)]/10 pointer-events-none"
+    ></div>
+  </div>
+
+  <div
+    class="relative max-w-4xl mx-auto px-4 pt-16 pb-8 text-center flex flex-col items-center justify-center"
+  >
+    <h3
+      dir="rtl"
+      class="font-quran text-2xl sm:text-3xl text-[var(--color-night-900)] dark:text-[var(--color-ivory)] font-medium mb-1 drop-shadow-sm select-none"
+    >
+      أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
+    </h3>
+    <p class="text-xs text-slate-400 dark:text-slate-500 mb-6 italic select-none">
+      {{
+        langService.isArabic()
+          ? 'ألا بذكر الله تطمئن القلوب'
+          : '"Unquestionably, by the remembrance of Allah hearts are assured."'
+      }}
+    </p>
+
+    <div class="text-[var(--color-gold-500)] text-sm tracking-widest mb-6 opacity-60">
+       ۞ ۞ ۞
+    </div>
+
+    <h2
+      dir="rtl"
+      class="font-quran text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-normal text-transparent bg-clip-text bg-gradient-to-b from-[var(--color-gold-400)] via-[var(--color-gold-500)] to-[var(--color-gold-600)] drop-shadow-[0_2px_8px_rgba(212,168,67,0.15)] select-none font-bold"
+    >
+      {{ currentAyah().arabic }}
+    </h2>
+
+    <p
+      class="mt-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto italic select-none"
+    >
+      {{ langService.isArabic() ? '' : currentAyah().english }}
+    </p>
+
+    <div
+      class="mt-8 w-40 h-[1.5px] bg-gradient-to-r from-transparent via-[var(--color-gold-500)]/50 to-transparent"
+    ></div>
+
+    <p
+      class="mt-8 text-xs sm:text-sm text-slate-400 dark:text-slate-500 tracking-wider select-none"
+    >
+      {{ 'HOME.TITLE' | translate }} · {{ 'HOME.SUBTITLE' | translate }}
+    </p>
+
+    <p class="mt-2 text-[9px] text-slate-400/60 uppercase tracking-widest select-none">
+      &copy; {{ currentYear }} · {{ 'FOOTER.SADAQALLAH' | translate }}
+    </p>
+  </div>
+</footer>
