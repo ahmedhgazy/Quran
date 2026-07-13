@@ -7,7 +7,9 @@
   </div>
 } @else if (surah(); as s) {
   <section class="max-w-3xl mx-auto px-4 py-12 pb-32 animate-fade-in">
+    <!-- Surah Header -->
     <div class="text-center mb-10">
+      <!-- Mode toggle -->
       <div class="flex justify-center gap-2 mb-6">
         <span class="btn !py-2 !px-4 !text-xs pointer-events-none">
           📖 {{ 'READER.STUDY_MODE' | translate }}
@@ -39,6 +41,59 @@
       </div>
     </div>
 
+    <!-- Hifz Toolbar -->
+    <div
+      class="mb-8 p-4 rounded-2xl bg-white dark:bg-[var(--color-night-900)] border border-[var(--color-gold-500)]/20 shadow-lg flex flex-wrap items-center justify-between gap-4 animate-fade-in"
+    >
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          (click)="toggleHifzMode()"
+          class="btn !py-2 !px-4 !text-xs flex items-center gap-2 transition"
+          [class.!bg-slate-400]="!hifzMode()"
+          [class.!shadow-none]="!hifzMode()"
+        >
+          🔀 {{ 'READER.HIFZ_MODE' | translate }}
+        </button>
+        @if (hifzMode()) {
+          <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            {{ 'READER.HIFZ_DIFFICULTY' | translate }}:
+          </span>
+          <div
+            class="flex rounded-lg overflow-hidden border border-[var(--color-gold-500)]/30 bg-slate-50 dark:bg-slate-900"
+          >
+            <button
+              (click)="setHifzDifficulty('random')"
+              class="px-3 py-1.5 text-[10px] font-bold transition cursor-pointer"
+              [class.bg-[var(--color-emeraldx-600)]]="hifzDifficulty() === 'random'"
+              [class.text-white]="hifzDifficulty() === 'random'"
+              [class.bg-transparent]="hifzDifficulty() !== 'random'"
+            >
+              {{ 'READER.HIFZ_DIFF_RANDOM' | translate }}
+            </button>
+            <button
+              (click)="setHifzDifficulty('endings')"
+              class="px-3 py-1.5 text-[10px] font-bold transition border-l border-r border-[var(--color-gold-500)]/30 cursor-pointer"
+              [class.bg-[var(--color-emeraldx-600)]]="hifzDifficulty() === 'endings'"
+              [class.text-white]="hifzDifficulty() === 'endings'"
+              [class.bg-transparent]="hifzDifficulty() !== 'endings'"
+            >
+              {{ 'READER.HIFZ_DIFF_ENDINGS' | translate }}
+            </button>
+            <button
+              (click)="setHifzDifficulty('whole')"
+              class="px-3 py-1.5 text-[10px] font-bold transition cursor-pointer"
+              [class.bg-[var(--color-emeraldx-600)]]="hifzDifficulty() === 'whole'"
+              [class.text-white]="hifzDifficulty() === 'whole'"
+              [class.bg-transparent]="hifzDifficulty() !== 'whole'"
+            >
+              {{ 'READER.HIFZ_DIFF_WHOLE' | translate }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Bismillah (for all surahs except At-Tawbah #9) -->
     @if (s.number !== 9 && s.number !== 1) {
       <p
         class="font-quran text-2xl text-center text-[var(--color-emeraldx-700)] dark:text-[var(--color-gold-400)] mb-8"
@@ -48,6 +103,7 @@
       </p>
     }
 
+    <!-- Ayah List -->
     <div class="space-y-4">
       @for (ayah of ayahs(); track ayah.ayahNumberGlobal) {
         <article [id]="'ayah-' + ayah.ayahNumberInSurah" class="card p-6">
@@ -97,9 +153,33 @@
             <div class="flex-1 min-w-0">
               <p
                 dir="rtl"
-                class="font-quran text-2xl md:text-[1.8rem] leading-[2.6] text-[var(--color-night-900)] dark:text-[var(--color-ivory)]"
+                class="font-quran text-2xl md:text-[1.8rem] leading-[2.6] text-[var(--color-night-900)] dark:text-[var(--color-ivory)] select-none"
               >
-                {{ ayah.textArabic }}
+                @if (hifzMode()) {
+                  @for (word of getAyahWords(ayah); track $index) {
+                    <span
+                      class="inline-block mx-1 transition-all duration-300 cursor-pointer"
+                      [class.word-masked]="isWordMasked(ayah, word, $index)"
+                      (click)="revealWord(ayah, $index)"
+                    >
+                      {{ word }}
+                    </span>
+                  }
+                } @else if (comparisonResultMap()[ayah.ayahNumberInSurah]; as matches) {
+                  @for (item of matches; track $index) {
+                    <span
+                      class="inline-block mx-1"
+                      [class.match-correct]="item.matched"
+                      [class.match-incorrect]="!item.matched"
+                    >
+                      {{ item.word }}
+                    </span>
+                  }
+                } @else if (showTajweed()[ayah.ayahNumberInSurah]) {
+                  <span [innerHTML]="getTajweedHtml(ayah)"></span>
+                } @else {
+                  {{ ayah.textArabic }}
+                }
               </p>
               <p
                 dir="ltr"
@@ -108,14 +188,98 @@
                 {{ ayah.textTranslation }}
               </p>
 
-              <button
-                class="mt-4 cursor-pointer text-xs font-semibold text-[var(--color-emeraldx-600)]"
-                (click)="toggleTafsir(ayah.ayahNumberInSurah)"
-                [attr.aria-expanded]="!!showTafsir()[ayah.ayahNumberInSurah]"
-              >
-                {{ 'READER.TAFSIR' | translate }}
-                {{ showTafsir()[ayah.ayahNumberInSurah] ? '▴' : '▾' }}
-              </button>
+              @if (recordedTextMap()[ayah.ayahNumberInSurah]) {
+                <div
+                  class="mt-2 text-xs text-slate-500 dark:text-slate-400 rounded bg-slate-50 dark:bg-slate-900 p-2.5 italic border border-slate-200/50 dark:border-slate-800"
+                >
+                  <span class="font-bold">🎤 {{ 'READER.COMPARE_FEEDBACK' | translate }}:</span> "{{
+                    recordedTextMap()[ayah.ayahNumberInSurah]
+                  }}"
+                </div>
+              }
+
+              <div class="mt-4 flex flex-wrap gap-4 items-center">
+                <!-- Tafsir toggle -->
+                <button
+                  class="cursor-pointer text-xs font-semibold text-[var(--color-emeraldx-600)]"
+                  (click)="toggleTafsir(ayah.ayahNumberInSurah)"
+                  [attr.aria-expanded]="!!showTafsir()[ayah.ayahNumberInSurah]"
+                >
+                  {{ 'READER.TAFSIR' | translate }}
+                  {{ showTafsir()[ayah.ayahNumberInSurah] ? '▴' : '▾' }}
+                </button>
+
+                <!-- Tajweed toggle -->
+                <button
+                  class="cursor-pointer text-xs font-semibold text-[var(--color-emeraldx-600)]"
+                  (click)="toggleTajweed(ayah.ayahNumberInSurah)"
+                  [attr.aria-expanded]="!!showTajweed()[ayah.ayahNumberInSurah]"
+                >
+                  📗 {{ 'READER.TAJWEED' | translate }}
+                  {{ showTajweed()[ayah.ayahNumberInSurah] ? '▴' : '▾' }}
+                </button>
+
+                <!-- Recitation speech tester -->
+                <button
+                  class="cursor-pointer text-xs font-semibold flex items-center gap-1.5"
+                  [class.text-red-500]="isRecording()[ayah.ayahNumberInSurah]"
+                  [class.text-[var(--color-emeraldx-600)]]="!isRecording()[ayah.ayahNumberInSurah]"
+                  (click)="
+                    isRecording()[ayah.ayahNumberInSurah]
+                      ? stopSpeechTesting()
+                      : startSpeechTesting(ayah)
+                  "
+                >
+                  @if (isRecording()[ayah.ayahNumberInSurah]) {
+                    <span class="recording-pulse-container w-3 h-3">
+                      <span class="recording-pulse-ring"></span>
+                      <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                    </span>
+                    {{ 'READER.STOP_RECITE' | translate }}
+                  } @else {
+                    🎤 {{ 'READER.RECITE' | translate }}
+                  }
+                </button>
+              </div>
+
+              @if (hifzMode()) {
+                <div
+                  class="mt-4 p-4 rounded-xl border border-[var(--color-gold-500)]/15 bg-slate-50 dark:bg-[var(--color-night-950)]/50 shadow-inner animate-fade-in space-y-2"
+                >
+                  <p
+                    class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                  >
+                    ⭐ {{ 'READER.HIFZ_SUBMIT_REVIEW' | translate }}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    <button
+                      (click)="submitHifzReview(ayah, 0)"
+                      class="px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-white cursor-pointer bg-red-550 hover:bg-red-600"
+                    >
+                      🔴 {{ 'READER.HIFZ_SCORE_0' | translate }}
+                    </button>
+                    <button
+                      (click)="submitHifzReview(ayah, 3)"
+                      class="px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-white cursor-pointer bg-amber-550 hover:bg-amber-600"
+                    >
+                      🟡 {{ 'READER.HIFZ_SCORE_3' | translate }}
+                    </button>
+                    <button
+                      (click)="submitHifzReview(ayah, 4)"
+                      class="px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-white cursor-pointer bg-emerald-550 hover:bg-emerald-600"
+                    >
+                      🟢 {{ 'READER.HIFZ_SCORE_4' | translate }}
+                    </button>
+                    <button
+                      (click)="submitHifzReview(ayah, 5)"
+                      class="px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-white cursor-pointer bg-blue-550 hover:bg-blue-600"
+                    >
+                      🔵 {{ 'READER.HIFZ_SCORE_5' | translate }}
+                    </button>
+                  </div>
+                </div>
+              }
+
               @if (showTafsir()[ayah.ayahNumberInSurah]) {
                 <p
                   class="mt-2 text-sm leading-relaxed rounded-xl bg-[var(--color-emeraldx-700)]/5 dark:bg-[var(--color-gold-500)]/5 border border-[var(--color-gold-500)]/15 p-4 animate-fade-in font-arabic"
@@ -124,12 +288,46 @@
                   {{ ayah.textTafseer }}
                 </p>
               }
+
+              @if (showTajweed()[ayah.ayahNumberInSurah]) {
+                <div
+                  class="mt-2 p-4 rounded-xl border border-[var(--color-gold-500)]/15 bg-[var(--color-emeraldx-700)]/5 dark:bg-[var(--color-gold-500)]/5 animate-fade-in space-y-2"
+                >
+                  @if (tajweedLoading()[ayah.ayahNumberInSurah]) {
+                    <div class="skeleton h-10 w-full"></div>
+                  } @else {
+                    <p
+                      class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                    >
+                      {{ 'READER.TAJWEED_LEGEND' | translate }}
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                      @for (rule of getTajweedRulesForAyah(ayah); track rule.key) {
+                        <button
+                          (click)="highlightTajweedRule(ayah, rule.cssClass)"
+                          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold text-white shadow-sm hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border-none"
+                          [style.backgroundColor]="rule.color"
+                          title="Click to highlight in text"
+                        >
+                          {{ 'READER.TAJWEED_RULES.' + rule.key | translate }} ({{ rule.nameAr }})
+                        </button>
+                      }
+                      @if (getTajweedRulesForAyah(ayah).length === 0) {
+                        <span class="text-xs text-slate-400 italic"
+                          >No rules detected for this verse.</span
+                        >
+                      }
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </article>
       }
     </div>
 
+    <!-- Prev / Next Navigation -->
     <div class="mt-10 flex justify-between text-sm">
       @if (nextSurah(); as next) {
         <a [routerLink]="['/surah', next]" class="btn">← {{ 'READER.NEXT_SURAH' | translate }} </a>
@@ -145,6 +343,7 @@
     </div>
   </section>
 
+  <!-- Bookmark Notes/Tags Modal -->
   @if (activeBookmarkAyah(); as bAyah) {
     <div
       class="fixed inset-0 bg-black/60 backdrop-blur-sm z-9999 flex items-center justify-center p-4 animate-fade-in"
@@ -152,6 +351,7 @@
       <div
         class="bg-white dark:bg-[#0a1714] border border-[var(--color-gold-500)]/30 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden"
       >
+        <!-- Header -->
         <div
           class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50"
         >
@@ -169,7 +369,9 @@
           </button>
         </div>
 
+        <!-- Content -->
         <div class="p-6 space-y-4 text-left">
+          <!-- Arabic mini preview -->
           <p
             dir="rtl"
             class="font-quran text-lg text-right text-[var(--color-night-900)] dark:text-[var(--color-ivory)] line-clamp-2 leading-relaxed"
@@ -177,6 +379,7 @@
             {{ bAyah.textArabic }}
           </p>
 
+          <!-- Personal Notes -->
           <div class="space-y-1.5">
             <label
               class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
@@ -191,6 +394,7 @@
             ></textarea>
           </div>
 
+          <!-- Tags Selection -->
           <div class="space-y-2">
             <label
               class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block"
@@ -234,6 +438,7 @@
           </div>
         </div>
 
+        <!-- Actions -->
         <div
           class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/10"
         >

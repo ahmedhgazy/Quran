@@ -9,6 +9,14 @@
   font-style: normal;
   font-display: swap;
 }
+/*
+@font-face {
+  font-family: 'KFGQPC Nastaleeq';
+  src: url('./assets/fonts/KFGQPC Nastaleeq - TTF.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+} */
 
 @theme {
   --color-night-800: #11221d;
@@ -78,9 +86,15 @@
 
 /* ── Animated gradient text ── */
 @keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 .animate-gradient {
   background-size: 200% 200%;
@@ -89,8 +103,14 @@
 
 /* ── Page fade animation ── */
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .animate-fade-in {
   animation: fade-in 0.4s ease both;
@@ -189,8 +209,12 @@
   border-radius: 0.75rem;
 }
 @keyframes skeleton-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ── Mushaf Reading Mode ── */
@@ -200,7 +224,9 @@
 
 .mushaf-word {
   position: relative;
-  transition: color 0.15s ease, background-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .ayah-end-marker {
@@ -217,7 +243,9 @@ button {
 
 /* ── Theme Background & Element Overrides ── */
 body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Light Theme: modern white/slate */
@@ -259,3 +287,133 @@ html.dark .input {
   height: 100% !important;
   cursor: pointer !important;
 }
+
+/* ── Tajweed Highlighting ── */
+.tj-ghunnah { color: #1fa848; }
+.tj-ikhafa { color: #d4a017; }
+.tj-ikhafa-shafawi { color: #c8a415; }
+.tj-idgham-ghunnah { color: #9b59b6; }
+.tj-idgham-wo-ghunnah { color: #3498db; }
+.tj-idgham-shafawi { color: #8e44ad; }
+.tj-idgham-mutajanisain { color: #6c3483; }
+.tj-idgham-mutaqaribain { color: #5b2c6f; }
+.tj-iqlab { color: #1abc9c; }
+.tj-qalaqah { color: #c0392b; }
+.tj-madda-normal { color: #2980b9; }
+.tj-madda-permissible { color: #e67e22; }
+.tj-madda-obligatory { color: #e74c3c; }
+.tj-madda-necessary { color: #c0392b; }
+.tj-ham-wasl { color: #7f8c8d; }
+.tj-laam-shamsiyah { color: #2c3e50; }
+.tj-slnt { color: #95a5a6; }
+
+/* Dark mode: brighten Tajweed colors for readability */
+.dark .tj-ghunnah { color: #2ecc71; }
+.dark .tj-ikhafa { color: #f1c40f; }
+.dark .tj-ikhafa-shafawi { color: #f1c40f; }
+.dark .tj-idgham-ghunnah { color: #bb8fce; }
+.dark .tj-idgham-wo-ghunnah { color: #5dade2; }
+.dark .tj-idgham-shafawi { color: #af7ac5; }
+.dark .tj-idgham-mutajanisain { color: #a569bd; }
+.dark .tj-idgham-mutaqaribain { color: #9b59b6; }
+.dark .tj-iqlab { color: #48c9b0; }
+.dark .tj-qalaqah { color: #ec7063; }
+.dark .tj-madda-normal { color: #5dade2; }
+.dark .tj-madda-permissible { color: #f0b27a; }
+.dark .tj-madda-obligatory { color: #ec7063; }
+.dark .tj-madda-necessary { color: #ec7063; }
+.dark .tj-ham-wasl { color: #aab7b8; }
+.dark .tj-laam-shamsiyah { color: #85929e; }
+.dark .tj-slnt { color: #b2babb; }
+
+/* ── Hifz Word Masking & Hide/Reveal ── */
+.word-masked {
+  color: transparent !important;
+  background-image: linear-gradient(to right, var(--color-gold-500) 50%, transparent 50%);
+  background-position: bottom;
+  background-size: 8px 1.5px;
+  background-repeat: repeat-x;
+  border-radius: 4px;
+  cursor: help;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+.word-masked span, .word-masked * {
+  color: transparent !important;
+}
+.word-masked:hover, .word-masked.revealed {
+  color: inherit !important;
+  background-image: none !important;
+}
+.word-masked:hover span, .word-masked.revealed span {
+  color: inherit !important;
+}
+
+/* ── Speech Recitation Tester Feedback ── */
+.match-correct {
+  color: #10b981 !important;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.dark .match-correct {
+  color: #34d399 !important;
+  text-shadow: 0 0 12px rgba(52, 211, 153, 0.5);
+}
+
+.match-incorrect {
+  color: #f59e0b !important;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+  transition: all 0.3s ease;
+}
+.dark .match-incorrect {
+  color: #fbbf24 !important;
+}
+
+/* ── Voice Wave Pulse Animation ── */
+.recording-pulse-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.recording-pulse-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background-color: rgba(239, 68, 68, 0.4);
+  animation: pulse-ring 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ── Tajweed Highlight Pulse ── */
+@keyframes tj-pulse {
+  0% {
+    text-shadow: none;
+    background-color: transparent;
+  }
+  30% {
+    text-shadow: 0 0 12px currentColor, 0 0 20px currentColor;
+    background-color: rgba(212, 168, 67, 0.25);
+    border-radius: 4px;
+  }
+  100% {
+    text-shadow: none;
+    background-color: transparent;
+  }
+}
+.tj-highlight-pulse {
+  animation: tj-pulse 1.2s ease-in-out;
+  /* Keep display inline to prevent combining characters (diacritics) from breaking layout alignment */
+}
+

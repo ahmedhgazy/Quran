@@ -1,3 +1,4 @@
+// ── Pagination ──
 export interface PagedResult<T> {
   items: T[];
   totalCount: number;
@@ -11,6 +12,7 @@ export interface PaginationParams {
   pageSize: number;
 }
 
+// ── Surah ──
 export interface SurahSummary {
   number: number;
   nameArabic: string;
@@ -26,6 +28,7 @@ export interface SurahDetail extends SurahSummary {
   ayahs: PagedResult<Ayah>;
 }
 
+// ── Ayah ──
 export interface Ayah {
   surahNumber: number;
   surahNameEnglish: string;
@@ -43,6 +46,7 @@ export interface Ayah {
   sajdahType: string | null;
 }
 
+// ── Tafsir / Translation ──
 export interface TafsirDto {
   surahNumber: number;
   surahNameArabic: string;
@@ -61,6 +65,7 @@ export interface TranslationDto {
   textTranslation: string;
 }
 
+// ── Quran Structure ──
 export interface JuzDto {
   number: number;
   startSurahNumber: number;
@@ -104,6 +109,7 @@ export interface PageDto {
   startAyahNumber: number;
 }
 
+// ── Audio ──
 export interface ReciterDto {
   identifier: string;
   name: string;
@@ -125,11 +131,13 @@ export interface AyahAudioItem {
   audioUrl: string;
 }
 
+// ── Search ──
 export interface SearchResult {
   matchedSurahs: SurahSummary[];
   matchedAyahs: PagedResult<Ayah>;
 }
 
+// ── Auth ──
 export interface AuthResponse {
   token: string;
   expiresAt: string;
@@ -137,12 +145,14 @@ export interface AuthResponse {
   email: string;
 }
 
+// ── Bookmark Tag ──
 export interface BookmarkTagDto {
   id: number;
   name: string;
   color: string;
 }
 
+// ── Bookmark ──
 export interface BookmarkDto {
   id: number;
   surahNumber: number;
@@ -153,6 +163,7 @@ export interface BookmarkDto {
   tags: BookmarkTagDto[];
 }
 
+// ── Last Read ──
 export interface LastReadDto {
   surahNumber: number;
   surahNameArabic: string;
@@ -164,6 +175,7 @@ export interface LastReadDto {
   updatedAtUtc: string;
 }
 
+// ── Khatm Planner ──
 export interface KhatmPlanDto {
   id: number;
   goalName: string;
@@ -179,6 +191,7 @@ export interface KhatmPlanDto {
   createdAtUtc: string;
 }
 
+// ── Habit Tracker ──
 export interface ReadingLogItemDto {
   date: string;
   versesCount: number;
@@ -191,4 +204,42 @@ export interface HabitStatsDto {
   todayVersesCount: number;
   todayProgressPercentage: number;
   activityHeatmap: ReadingLogItemDto[];
+}
+
+// ── Tajweed ──
+export interface TajweedAnnotation {
+  rule: string;
+  start: number;
+  end: number;
+}
+
+export interface AyahTajweed {
+  ayahNumber: number;
+  annotations: TajweedAnnotation[];
+}
+
+export interface SurahTajweed {
+  surahNumber: number;
+  ayahs: AyahTajweed[];
+}
+
+// ── Hifz ──
+export interface HifzProgressDto {
+  id: number;
+  surahNumber: number;
+  surahNameEnglish: string;
+  ayahNumber: number;
+  easeFactor: number;
+  intervalDays: number;
+  repetitions: number;
+  nextReviewDateUtc: string;
+  textArabic: string;
+  textTranslation: string;
+}
+
+export interface HifzStatsDto {
+  totalMemorized: number;
+  dueToday: number;
+  dueTomorrow: number;
+  overdueCount: number;
 }

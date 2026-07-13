@@ -1,3 +1,4 @@
+<!-- Backdrop -->
 @if (state.sidebarOpen()) {
   <div
     class="fixed inset-0 z-[60] bg-black/40 transition-opacity duration-300 opacity-100"
@@ -6,12 +7,14 @@
   ></div>
 }
 
+<!-- Sidebar Panel -->
 <aside
   class="fixed top-0 ltr:right-0 rtl:left-0 z-[70] h-full w-80 max-w-[85vw] bg-white dark:bg-[var(--color-night-900)] shadow-2xl shadow-black/20 transition-transform duration-300 ease-out flex flex-col"
   [class]="state.sidebarOpen() ? 'translate-x-0' : 'ltr:translate-x-full rtl:-translate-x-full'"
   role="dialog"
   [attr.aria-label]="'NAVIGATION_SIDEBAR.TITLE' | translate"
 >
+  <!-- Header -->
   <div
     class="p-6 bg-gradient-to-br from-[var(--color-emeraldx-700)] to-[var(--color-night-800)] text-white relative overflow-hidden shrink-0 text-start"
   >
@@ -21,6 +24,7 @@
     <div
       class="absolute -left-4 -bottom-4 w-20 h-20 rounded-full border-[10px] border-[var(--color-emeraldx-400)]/10"
     ></div>
+    <!-- class="absolute top-4 ltr:right-4 rtl:left-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center justify-center text-sm" -->
     <button
       (click)="state.closeSidebar()"
       class="absolute top-4 ltr:right-4 rtl:left-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center justify-center text-sm"
@@ -35,6 +39,7 @@
       {{ 'NAVIGATION_SIDEBAR.SUBTITLE' | translate }}
     </p>
 
+    <!-- Tabs inside header -->
     <div
       class="flex gap-1 p-0.5 rounded-xl bg-white/10 border border-white/10 text-xs font-medium relative z-10"
     >
@@ -74,6 +79,7 @@
     </div>
   </div>
 
+  <!-- Loading indicator -->
   @if (state.loading()) {
     <div class="flex-1 flex flex-col items-center justify-center gap-2 text-slate-400 p-8">
       <div
@@ -82,8 +88,11 @@
       <p class="text-xs">Loading data...</p>
     </div>
   } @else {
+    <!-- Tab Contents -->
     <div class="flex-1 overflow-y-auto flex flex-col">
+      <!-- Surahs Tab -->
       @if (activeTab() === 'surah') {
+        <!-- Search bar -->
         <div class="p-4 shrink-0">
           <input
             class="input !py-2.5 !text-xs"
@@ -93,6 +102,7 @@
           />
         </div>
 
+        <!-- Surah List -->
         <div class="flex-1 overflow-y-auto px-4 pb-4">
           @for (s of filteredSurahs(); track s.number) {
             <a
@@ -130,6 +140,7 @@
         </div>
       }
 
+      <!-- Juzs Tab -->
       @if (activeTab() === 'juz') {
         <div class="flex-1 overflow-y-auto px-4 py-4">
           @for (j of state.juzs(); track j.number) {
@@ -160,8 +171,10 @@
         </div>
       }
 
+      <!-- Verse Tab -->
       @if (activeTab() === 'verse') {
         @if (selectedSurahForVerse(); as selected) {
+          <!-- Step 2: Selected Surah & Verse Grid -->
           <div
             class="p-4 shrink-0 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-[var(--color-gold-500)]/5 text-start"
           >
@@ -206,6 +219,7 @@
             </div>
           </div>
         } @else {
+          <!-- Step 1: Select Surah -->
           <div class="p-4 shrink-0 border-b border-slate-100 dark:border-slate-800 text-start">
             <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
               {{ 'NAVIGATION_SIDEBAR.SELECT_SURAH' | translate }}

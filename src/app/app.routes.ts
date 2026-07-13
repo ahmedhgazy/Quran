@@ -39,6 +39,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/profile/profile').then((m) => m.ProfilePage),
   },
   {
+    path: 'hifz',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/hifz/hifz-dashboard').then((m) => m.HifzDashboardPage),
+  },
+  {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login').then((m) => m.LoginPage),
   },

@@ -25,7 +25,9 @@ import {
   BookmarkTagDto,
   KhatmPlanDto,
   HabitStatsDto,
-  AuthResponse,
+  SurahTajweed,
+  HifzProgressDto,
+  HifzStatsDto,
 } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
@@ -41,6 +43,7 @@ export class ApiService {
     return params;
   }
 
+  // ── Surahs ──
   getSurahs(p?: PaginationParams): Observable<PagedResult<SurahSummary>> {
     return this.http.get<PagedResult<SurahSummary>>(`${this.base}/surahs`, {
       params: this.paginate(p),
@@ -53,6 +56,7 @@ export class ApiService {
     });
   }
 
+  // ── Ayahs ──
   getAyahsBySurah(surahNumber: number, p?: PaginationParams): Observable<PagedResult<Ayah>> {
     return this.http.get<PagedResult<Ayah>>(`${this.base}/surahs/${surahNumber}/ayahs`, {
       params: this.paginate(p),
@@ -63,6 +67,7 @@ export class ApiService {
     return this.http.get<Ayah>(`${this.base}/surahs/${surahNumber}/ayahs/${ayahNumber}`);
   }
 
+  // ── Structure ──
   getJuzs(p?: PaginationParams): Observable<PagedResult<JuzDto>> {
     return this.http.get<PagedResult<JuzDto>>(`${this.base}/juzs`, { params: this.paginate(p) });
   }
@@ -101,6 +106,25 @@ export class ApiService {
     return this.http.get<PagedResult<Ayah>>(`${this.base}/sajdahs`, { params: this.paginate(p) });
   }
 
+  // ── Tajweed ──
+  getTajweed(surahNumber: number): Observable<SurahTajweed> {
+    return this.http.get<SurahTajweed>(`${this.base}/tajweed/${surahNumber}`);
+  }
+
+  // ── Hifz ──
+  getDueHifz(): Observable<HifzProgressDto[]> {
+    return this.http.get<HifzProgressDto[]>(`${this.base}/hifz/due`);
+  }
+
+  reviewHifz(surahNumber: number, ayahNumber: number, grade: number): Observable<HifzProgressDto> {
+    return this.http.post<HifzProgressDto>(`${this.base}/hifz/review`, { surahNumber, ayahNumber, grade });
+  }
+
+  getHifzStats(): Observable<HifzStatsDto> {
+    return this.http.get<HifzStatsDto>(`${this.base}/hifz/stats`);
+  }
+
+  // ── Tafsir / Translation ──
   getTafsir(surahNumber: number, ayahNumber: number): Observable<TafsirDto> {
     return this.http.get<TafsirDto>(`${this.base}/tafsirs/${surahNumber}/${ayahNumber}`);
   }
@@ -109,12 +133,14 @@ export class ApiService {
     return this.http.get<TranslationDto>(`${this.base}/translations/${surahNumber}/${ayahNumber}`);
   }
 
+  // ── Search ──
   search(query: string, lang?: string, p?: PaginationParams): Observable<SearchResult> {
     let params = this.paginate(p).set('query', query);
     if (lang) params = params.set('lang', lang);
     return this.http.get<SearchResult>(`${this.base}/search`, { params });
   }
 
+  // ── Audio ──
   getReciters(): Observable<ReciterDto[]> {
     return this.http.get<ReciterDto[]>(`${this.base}/reciters`);
   }
@@ -143,6 +169,14 @@ export class ApiService {
     });
   }
 
+  // ── Recitation Transcription ──
+  transcribeRecitation(audioBlob: Blob): Observable<{ transcription: string }> {
+    const formData = new FormData();
+    formData.append('file', audioBlob, 'recitation.wav');
+    return this.http.post<{ transcription: string }>(`${this.base}/recitation/transcribe`, formData);
+  }
+
+  // ── Bookmarks ──
   getBookmarks(tagId?: number | null, p?: PaginationParams): Observable<PagedResult<BookmarkDto>> {
     let params = this.paginate(p);
     if (tagId !== undefined && tagId !== null) {
@@ -173,6 +207,7 @@ export class ApiService {
     return this.http.delete<void>(`${this.base}/users/me/bookmarks/${id}`);
   }
 
+  // ── Bookmark Tags ──
   getBookmarkTags(): Observable<BookmarkTagDto[]> {
     return this.http.get<BookmarkTagDto[]>(`${this.base}/users/me/bookmark-tags`);
   }
@@ -192,6 +227,7 @@ export class ApiService {
     return this.http.delete<void>(`${this.base}/users/me/bookmark-tags/${id}`);
   }
 
+  // ── Khatm Planner ──
   getKhatmPlan(): Observable<KhatmPlanDto> {
     return this.http.get<KhatmPlanDto>(`${this.base}/users/me/khatm-plan`);
   }
@@ -228,6 +264,7 @@ export class ApiService {
     return this.http.delete<void>(`${this.base}/users/me/khatm-plan/${planId}`);
   }
 
+  // ── Habit Tracker ──
   getHabitStats(): Observable<HabitStatsDto> {
     return this.http.get<HabitStatsDto>(`${this.base}/users/me/habit-stats`);
   }
@@ -245,6 +282,7 @@ export class ApiService {
     );
   }
 
+  // ── Last Read ──
   getLastRead(): Observable<LastReadDto> {
     return this.http.get<LastReadDto>(`${this.base}/users/me/last-read`);
   }
@@ -261,16 +299,17 @@ export class ApiService {
     });
   }
 
-  login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(
+  // ── Auth ──
+  login(email: string, password: string): Observable<import('../models/api.models').AuthResponse> {
+    return this.http.post<import('../models/api.models').AuthResponse>(
       `${this.base}/auth/login`,
       { email, password },
       { withCredentials: true },
     );
   }
 
-  loginWithGoogle(idToken: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(
+  loginWithGoogle(idToken: string): Observable<import('../models/api.models').AuthResponse> {
+    return this.http.post<import('../models/api.models').AuthResponse>(
       `${this.base}/auth/google`,
       { idToken },
       { withCredentials: true },
@@ -281,8 +320,8 @@ export class ApiService {
     username: string,
     email: string,
     password: string,
-  ): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(
+  ): Observable<import('../models/api.models').AuthResponse> {
+    return this.http.post<import('../models/api.models').AuthResponse>(
       `${this.base}/auth/register`,
       { username, email, password },
       { withCredentials: true },
@@ -295,8 +334,8 @@ export class ApiService {
     });
   }
 
-  refresh(): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(
+  refresh(): Observable<import('../models/api.models').AuthResponse> {
+    return this.http.post<import('../models/api.models').AuthResponse>(
       `${this.base}/auth/refresh`,
       {},
       { withCredentials: true },
